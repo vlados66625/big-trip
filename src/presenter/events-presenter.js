@@ -15,13 +15,13 @@ export default class EventsPresenter {
   }
 
   init() {
-    render(new SortView, this.eventsContainer);
+    render(new SortView(), this.eventsContainer);
     render(this.eventsListView, this.eventsContainer);
-    render(new CreatingEventView, this.eventsListView.getElement());
-    render(new EventEditView, this.eventsListView.getElement());
+    render(new CreatingEventView(), this.eventsListView.getElement());
+    render(new EventEditView(), this.eventsListView.getElement());
 
     for (let i = 0; i < NUMBER_EVENTS; i++) {
-      render(new EventsItemView, this.eventsListView.getElement());
+      render(new EventsItemView(), this.eventsListView.getElement());
     }
   }
 }
