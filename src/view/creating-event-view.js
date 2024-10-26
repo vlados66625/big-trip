@@ -167,7 +167,7 @@ function createCreatingEventsViewTemplate() {
   );
 }
 
-export default class CreateCreatingEventsView {
+export default class CreatingEventView {
   getTemplate() {
     return createCreatingEventsViewTemplate();
   }

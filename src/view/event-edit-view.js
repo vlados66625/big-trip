@@ -160,7 +160,7 @@ function createEventsEditViewTemplate() {
   );
 }
 
-export default class CreateEventsEditView {
+export default class EventEditView {
   getTemplate() {
     return createEventsEditViewTemplate();
   }
