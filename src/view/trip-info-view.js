@@ -14,7 +14,7 @@ function createTripInfoTemplate() {
   );
 }
 
-export default class CreateTripInfoView {
+export default class TripInfoView {
   getTemplate() {
     return createTripInfoTemplate();
   }

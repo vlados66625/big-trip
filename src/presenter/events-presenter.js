@@ -1,23 +1,27 @@
 import { render } from '../render.js';
-import CreateSortView from '../view/sort-view.js';
-import CreateEventsListView from '../view/events-list-view.js';
-import CreateEventsItemView from '../view/events-item-view.js';
-import CreateEventsEditView from '../view/events-edit-view.js';
-import CreateCreatingEventsView from '../view/creating-event-view.js';
+import SortView from '../view/sort-view.js';
+import EventsListView from '../view/events-list-view.js';
+import EventsItemView from '../view/events-item-view.js';
+import EventEditView from '../view/event-edit-view.js';
+import CreatingEventView from '../view/creating-event-view.js';
 
-const tripEventsSection = document.querySelector('.trip-events');
+const NUMBER_EVENTS = 3;
 
 export default class EventsPresenter {
-  eventsListView = new CreateEventsListView;
+  eventsListView = new EventsListView();
+
+  constructor({ eventsContainer }) {
+    this.eventsContainer = eventsContainer;
+  }
 
   init() {
-    render(new CreateSortView, tripEventsSection);
-    render(this.eventsListView, tripEventsSection);
-    render(new CreateCreatingEventsView, this.eventsListView.getElement());
-    render(new CreateEventsEditView, this.eventsListView.getElement());
+    render(new SortView(), this.eventsContainer);
+    render(this.eventsListView, this.eventsContainer);
+    render(new CreatingEventView(), this.eventsListView.getElement());
+    render(new EventEditView(), this.eventsListView.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new CreateEventsItemView, this.eventsListView.getElement());
+    for (let i = 0; i < NUMBER_EVENTS; i++) {
+      render(new EventsItemView(), this.eventsListView.getElement());
     }
   }
 }
