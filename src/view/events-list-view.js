@@ -24,3 +24,4 @@ export default class EventsListView {
     this.element = null;
   }
 }
+
