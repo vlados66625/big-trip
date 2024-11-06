@@ -21,13 +21,12 @@ const getRandomItemArray = (array) => array[getRandomNumber(0, array.length - 1,
 
 const formatsDate = (date, format) => date ? dayjs(date).format(format) : '';
 
-const calculatesDuration = (dateFrom, dateTo) => {
-  const dateFr = dayjs(dateFrom);
-  const dateT = dayjs(dateTo);
-  const difference = dayjs.duration(dateT.diff(dateFr));
-  const hour = difference.format(DATE_FORMAT.HOURS);
-  const minute = difference.minutes();
-  return `${hour !== '00' ? `${hour}H` : ''} ${minute}M`;
+const calculatesDurationDate = (dateFrom, dateTo) => {
+  const difference = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
+  const days = difference.format(DATE_FORMAT.DAYS);
+  const hours = difference.format(DATE_FORMAT.HOURS);
+  const minutes = difference.format(DATE_FORMAT.MINUTES);
+  return `${days !== '00' ? `${days}D` : ''} ${hours !== '00' ? `${hours}H` : ''} ${minutes}M`;
 };
 
-export { getRandomNumber, getRandomItemArray, formatsDate, calculatesDuration };
+export { getRandomNumber, getRandomItemArray, formatsDate, calculatesDurationDate };
