@@ -11,4 +11,11 @@ const DATE_FORMAT = {
 
 const EVENT_COUNT = 4;
 
-export { DATE_FORMAT, EVENT_COUNT };
+const FilterType = {
+  EVERTHING: 'Everthing',
+  PAST: 'Past',
+  PRESENT: 'Present',
+  FUTURE: 'Future'
+};
+
+export { DATE_FORMAT, EVENT_COUNT, FilterType };

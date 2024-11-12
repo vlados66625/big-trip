@@ -1,6 +1,6 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { DATE_FORMAT } from '../const.js';
-import { formatsDate } from '../util.js';
+import { formatsDate } from '../util/task.js';
 
 const createEventsEditViewTemplate = ({ point, offers, destinations }) =>
   `<li class="trip-events__item">
@@ -124,27 +124,25 @@ const createEventsEditViewTemplate = ({ point, offers, destinations }) =>
               </form>
             </li>`;
 
-export default class EventEditView {
-  constructor({ point, offers, destinations }) {
-    this.point = point;
-    this.offers = offers;
-    this.destinations = destinations;
+export default class EventEditView extends AbstractView {
+  #point = null;
+  #offers = null;
+  #destinations = null;
+  #onEventEditFormSubmit = null;
+
+
+  constructor({ point, offers, destinations }, onEventEditFormSubmit) {
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#onEventEditFormSubmit = onEventEditFormSubmit;
+    this.element.querySelector('.event').addEventListener('submit', this.#onEventEditFormSubmit);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onEventEditFormSubmit);
   }
 
-  getTemplate() {
-    return createEventsEditViewTemplate({ point: this.point, offers: this.offers, destinations: this.destinations });
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(createEventsEditViewTemplate({ point: this.point, offers: this.offers, destinations: this.destinations }));
-    }
-
-    return this.element;
-  }
-
-  removeElemnt() {
-    this.element = null;
+  get template() {
+    return createEventsEditViewTemplate({ point: this.#point, offers: this.#offers, destinations: this.#destinations });
   }
 }
 
