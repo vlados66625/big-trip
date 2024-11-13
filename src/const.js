@@ -12,10 +12,10 @@ const DATE_FORMAT = {
 const EVENT_COUNT = 4;
 
 const FilterType = {
-  EVERTHING: 'Everthing',
-  PAST: 'Past',
-  PRESENT: 'Present',
-  FUTURE: 'Future'
+  EVERTHING: 'everthing',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
 };
 
 export { DATE_FORMAT, EVENT_COUNT, FilterType };
