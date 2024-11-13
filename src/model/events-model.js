@@ -3,12 +3,12 @@ import { EVENT_COUNT } from '../const.js';
 
 
 export default class EventsModel {
-  points = Array.from({ length: EVENT_COUNT }, getRandomEvent);
-  destinations = Destinations;
-  offers = Offers;
+  #points = Array.from({ length: EVENT_COUNT }, getRandomEvent);
+  #destinations = Destinations;
+  #offers = Offers;
 
-  getDestinationsById() {
-    return this.destinations.reduce((destinationsById, destination) => {
+  get destinationsById() {
+    return this.#destinations.reduce((destinationsById, destination) => {
       destinationsById[destination.id] = {
         id: destination.id,
         description: destination.description,
@@ -20,8 +20,8 @@ export default class EventsModel {
     }, {});
   }
 
-  getOffersById() {
-    return this.offers.reduce((offersById, offersByType) => {
+  get offersById() {
+    return this.#offers.reduce((offersById, offersByType) => {
       offersByType.offers.forEach((offer) => {
         offersById[offer.id] = {
           id: offer.id,
@@ -34,7 +34,7 @@ export default class EventsModel {
     }, {});
   }
 
-  getPoints() {
-    return this.points;
+  get points() {
+    return this.#points;
   }
 }
