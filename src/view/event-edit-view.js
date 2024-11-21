@@ -142,7 +142,7 @@ export default class EventEditView extends AbstractView {
 
   #handlerEventEditFormSubmit = (evt) => {
     evt.preventDefault();
-    this.#onEventEditFormSubmit();
+    this.#onEventEditFormSubmit(this.#point);
   };
 
   get template() {

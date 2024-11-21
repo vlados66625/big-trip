@@ -30,6 +30,10 @@ export default class EventsPresenter {
     this.#renderPageEvents();
   }
 
+  #resetViews = () => {
+    this.#eventPresenters.forEach((eventPresenter) => eventPresenter.resetView());
+  };
+
   #handleEventChange = (updatePoint) => {
     this.#pointsData = updateItems(this.#pointsData, updatePoint);
     this.#eventPresenters.get(updatePoint.id).init({ point: updatePoint, offers: this.#offersByIdData, destinations: this.#getDestinationsById });
@@ -40,7 +44,7 @@ export default class EventsPresenter {
   }
 
   #renderEvent(dataEvent) {
-    this.#eventPresenter = new EventPresenter({ handleEventChange: this.#handleEventChange, eventsListElement: this.#eventsListView.element });
+    this.#eventPresenter = new EventPresenter({ handleEventChange: this.#handleEventChange, eventsListElement: this.#eventsListView.element, resetViews: this.#resetViews });
     this.#eventPresenter.init(dataEvent);
     this.#eventPresenters.set(dataEvent.point.id, this.#eventPresenter);
   }

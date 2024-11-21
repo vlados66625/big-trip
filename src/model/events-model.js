@@ -3,7 +3,7 @@ import { EVENT_COUNT } from '../const.js';
 
 
 export default class EventsModel {
-  #points = Array.from({ length: EVENT_COUNT }, getRandomEvent);
+  #points = Array.from(new Set(Array.from({ length: EVENT_COUNT }, getRandomEvent)));
   #destinations = Destinations;
   #offers = Offers;
 
