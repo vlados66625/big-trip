@@ -136,11 +136,11 @@ export default class EventEditView extends AbstractView {
     this.#offers = offers;
     this.#destinations = destinations;
     this.#onEventEditFormSubmit = onEventEditFormSubmit;
-    this.element.querySelector('.event').addEventListener('submit', this.#handlerEventEditFormSubmit);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handlerEventEditFormSubmit);
+    this.element.querySelector('.event').addEventListener('submit', this.#onEventEditFormItemSubmit);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onEventEditFormItemSubmit);
   }
 
-  #handlerEventEditFormSubmit = (evt) => {
+  #onEventEditFormItemSubmit = (evt) => {
     evt.preventDefault();
     this.#onEventEditFormSubmit(this.#point);
   };
@@ -149,5 +149,3 @@ export default class EventEditView extends AbstractView {
     return createEventsEditViewTemplate({ point: this.#point, offers: this.#offers, destinations: this.#destinations });
   }
 }
-
-

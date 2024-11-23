@@ -19,8 +19,8 @@ const FilterType = {
 };
 
 const Mode = {
-  DEFAULT: 'default',
-  EDITABLE: 'editable'
+  VIEW: 'view',
+  EDIT: 'edit'
 };
 
 export { DATE_FORMAT, EVENT_COUNT, FilterType, Mode };

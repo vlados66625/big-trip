@@ -7,14 +7,14 @@ export default class EventPresenter {
   #eventEdit = null;
   #eventItem = null;
   #eventsListElement = null;
-  #handleEventChange = null;
+  #onEventItemChange = null;
   #resetViews = null;
   #dataEvent = null;
-  #eventMode = Mode.DEFAULT;
+  #eventMode = Mode.VIEW;
 
-  constructor({ handleEventChange, eventsListElement, resetViews }) {
+  constructor({ onEventItemChange, eventsListElement, resetViews }) {
     this.#eventsListElement = eventsListElement;
-    this.#handleEventChange = handleEventChange;
+    this.#onEventItemChange = onEventItemChange;
     this.#resetViews = resetViews;
   }
 
@@ -25,17 +25,17 @@ export default class EventPresenter {
     const prevEventItem = this.#eventItem;
 
     this.#eventEdit = new EventEditView({ ...this.#dataEvent, onEventEditFormSubmit: this.#onEventEditFormSubmit });
-    this.#eventItem = new EventItemView({ ...this.#dataEvent, onRollupClick: this.#onRollupClick, handleEventChange: this.#onEventChange });
+    this.#eventItem = new EventItemView({ ...this.#dataEvent, onRollupClick: this.#onRollupClick, onEventChange: this.#onEventChange });
 
     if (prevEventEdit === null && prevEventItem === null) {
       return render(this.#eventItem, this.#eventsListElement);
     }
 
-    if (this.#eventMode === Mode.EDITABLE) {
+    if (this.#eventMode === Mode.EDIT) {
       replace(this.#eventEdit, prevEventEdit);
     }
 
-    if (this.#eventMode === Mode.DEFAULT) {
+    if (this.#eventMode === Mode.VIEW) {
       replace(this.#eventItem, prevEventItem);
     }
 
@@ -49,26 +49,26 @@ export default class EventPresenter {
   }
 
   resetView() {
-    if (this.#eventMode !== Mode.DEFAULT) {
+    if (this.#eventMode !== Mode.VIEW) {
       this.#changeFormToCard();
     }
   }
 
   #changeFormToCard() {
     replace(this.#eventItem, this.#eventEdit);
-    this.#eventMode = Mode.DEFAULT;
+    this.#eventMode = Mode.VIEW;
     window.removeEventListener('keydown', this.#onEventEditEscape);
   }
 
   #onEventEditFormSubmit = (pointData) => {
     this.#changeFormToCard();
-    this.#handleEventChange(pointData);
+    this.#onEventItemChange(pointData);
   };
 
   #onRollupClick = () => {
     this.#resetViews();
     replace(this.#eventEdit, this.#eventItem);
-    this.#eventMode = Mode.EDITABLE;
+    this.#eventMode = Mode.EDIT;
     window.addEventListener('keydown', this.#onEventEditEscape);
   };
 
@@ -78,5 +78,5 @@ export default class EventPresenter {
     }
   };
 
-  #onEventChange = () => this.#handleEventChange({ ...this.#dataEvent.point, isFavorite: !this.#dataEvent.point.isFavorite });
+  #onEventChange = () => this.#onEventItemChange({ ...this.#dataEvent.point, isFavorite: !this.#dataEvent.point.isFavorite });
 }
