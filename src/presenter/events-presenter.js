@@ -1,16 +1,21 @@
-import { render, replace } from '../framework/render.js';
+import { render } from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
-import EventItemView from '../view/event-item-view.js';
-import EventEditView from '../view/event-edit-view.js';
 import NoEventView from '../view/no-event-view.js';
+import EventPresenter from './event-presenter.js';
+import { updateItems } from '../util/common.js';
+
 export default class EventsPresenter {
   #eventsListView = new EventsListView();
+  #sortView = new SortView();
+  #noEventView = new NoEventView();
+  #eventPresenter = null;
   #eventsContainer = null;
   #eventsModel = null;
   #pointsData = null;
   #offersByIdData = null;
   #getDestinationsById = null;
+  #eventPresenters = new Map();
 
   constructor({ eventsContainer, eventsModel }) {
     this.#eventsContainer = eventsContainer;
@@ -25,41 +30,48 @@ export default class EventsPresenter {
     this.#renderPageEvents();
   }
 
+  #resetViews = () => {
+    this.#eventPresenters.forEach((eventPresenter) => eventPresenter.resetView());
+  };
+
+  #onEventItemChange = (updatePoint) => {
+    this.#pointsData = updateItems(this.#pointsData, updatePoint);
+    this.#eventPresenters.get(updatePoint.id).init({ point: updatePoint, offers: this.#offersByIdData, destinations: this.#getDestinationsById });
+  };
+
+  #renderSort() {
+    render(this.#sortView, this.#eventsContainer);
+  }
+
   #renderEvent(dataEvent) {
-    const eventEdit = new EventEditView(dataEvent, onEventEditFormSubmit);
-    const eventItem = new EventItemView(dataEvent, onRollupClick);
+    this.#eventPresenter = new EventPresenter({ onEventItemChange: this.#onEventItemChange, eventsListElement: this.#eventsListView.element, resetViews: this.#resetViews });
+    this.#eventPresenter.init(dataEvent);
+    this.#eventPresenters.set(dataEvent.point.id, this.#eventPresenter);
+  }
 
-    const onEventEditEscape = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        onEventEditFormSubmit();
-      }
-    };
+  #clearEvent(event) {
+    this.#eventPresenters.get(event.point.id).destroy();
+    this.#eventPresenters.delete(event.point.id);
+  }
 
-    function onEventEditFormSubmit() {
-      replace(eventItem, eventEdit);
-      window.removeEventListener('keydown', onEventEditEscape);
+  #renderEventsList() {
+    render(this.#eventsListView, this.#eventsContainer);
+    for (let i = 0; i < this.#pointsData.length; i++) {
+      this.#renderEvent({ point: this.#pointsData[i], offers: this.#offersByIdData, destinations: this.#getDestinationsById });
     }
+  }
 
-    function onRollupClick() {
-      replace(eventEdit, eventItem);
-      window.addEventListener('keydown', onEventEditEscape);
-    }
-
-    render(eventItem, this.#eventsListView.element);
+  #renderNoEvent() {
+    render(this.#noEventView, this.#eventsContainer);
   }
 
   #renderPageEvents() {
     if (this.#pointsData.length !== 0) {
-      render(new SortView(), this.#eventsContainer);
-      render(this.#eventsListView, this.#eventsContainer);
-
-      for (let i = 0; i < this.#pointsData.length; i++) {
-        this.#renderEvent({ point: this.#pointsData[i], offers: this.#offersByIdData, destinations: this.#getDestinationsById });
-      }
+      this.#renderSort();
+      this.#renderEventsList();
     } else {
-      render(new NoEventView(), this.#eventsContainer);
+      this.#renderNoEvent();
     }
-
   }
 }
+

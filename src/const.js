@@ -9,7 +9,7 @@ const DATE_FORMAT = {
   FULL_DATETIME_D_M_Y: 'DD/MM/YY HH:mm'
 };
 
-const EVENT_COUNT = 4;
+const EVENT_COUNT = 7;
 
 const FilterType = {
   EVERTHING: 'everthing',
@@ -18,4 +18,9 @@ const FilterType = {
   PAST: 'past'
 };
 
-export { DATE_FORMAT, EVENT_COUNT, FilterType };
+const Mode = {
+  VIEW: 'view',
+  EDIT: 'edit'
+};
+
+export { DATE_FORMAT, EVENT_COUNT, FilterType, Mode };
