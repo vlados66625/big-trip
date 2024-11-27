@@ -58,8 +58,8 @@ const Points = [
   {
     id: 'b5f6c7d8-9e8f-4c1d-8a6b-f5d3e7a9f312',
     basePrice: 450,
-    dateFrom: '2023-11-01T10:00:00.000Z',
-    dateTo: '2023-11-01T15:00:00.000Z',
+    dateFrom: '2024-11-01T10:00:00.000Z',
+    dateTo: '2024-11-01T15:00:00.000Z',
     destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
     isFavorite: false,
     offers: [
@@ -136,8 +136,8 @@ const Points = [
   {
     id: 'g7a8b9c0-1d2e-3f4f-b5c6-d7e8f9a0b1c2',
     basePrice: 700,
-    dateFrom: '2025-01-10T09:00:00.000Z',
-    dateTo: '2025-01-10T17:00:00.000Z',
+    dateFrom: '2024-12-30T09:00:00.000Z',
+    dateTo: '2024-12-30T17:00:00.000Z',
     destination: 'bf97cb75-b2ef-4d74-a83f-0e527b920e22',
     isFavorite: false,
     offers: [
@@ -149,8 +149,8 @@ const Points = [
   {
     id: 'h8b9c0d1-2e3f-4g5f-c6d7-e8f9a0b1c3d4',
     basePrice: 620,
-    dateFrom: '2025-02-05T08:30:00.000Z',
-    dateTo: '2025-02-05T15:45:00.000Z',
+    dateFrom: '2024-12-05T08:30:00.000Z',
+    dateTo: '2024-12-05T15:45:00.000Z',
     destination: 'e5d8a4b1-1d0b-4c4d-9f5c-3d273a5dfb6a',
     isFavorite: true,
     offers: [
@@ -162,8 +162,8 @@ const Points = [
   {
     id: 'i9c0d1e2-3f4g-5h6f-d7e8-f9a0b1c3d4e5',
     basePrice: 800,
-    dateFrom: '2025-03-12T07:00:00.000Z',
-    dateTo: '2025-03-12T13:00:00.000Z',
+    dateFrom: '2024-12-22T07:00:00.000Z',
+    dateTo: '2024-12-22T13:00:00.000Z',
     destination: 'bfa5cb75-a1fe-4b77-a83c-0e528e910e04',
     isFavorite: false,
     offers: [
@@ -175,8 +175,8 @@ const Points = [
   {
     id: 'j0d1e2f3-4g5h-6i7f-e8f9-a0b1c3d4e5f6', // В будущем году
     basePrice: 900,
-    dateFrom: '2025-04-20T09:30:00.000Z',
-    dateTo: '2025-04-20T20:00:00.000Z',
+    dateFrom: '2024-12-20T09:30:00.000Z',
+    dateTo: '2024-12-20T20:00:00.000Z',
     destination: 'f7a5cb63-c1ee-4c32-9b7d-0f525e920e87',
     isFavorite: true,
     offers: [
