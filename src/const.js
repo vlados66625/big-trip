@@ -23,4 +23,10 @@ const Mode = {
   EDIT: 'edit'
 };
 
-export { DATE_FORMAT, EVENT_COUNT, FilterType, Mode };
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
+
+export { DATE_FORMAT, EVENT_COUNT, FilterType, Mode, SortType };

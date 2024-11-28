@@ -3,12 +3,14 @@ import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import EventPresenter from './event-presenter.js';
+import { SortType } from '../const.js';
 import { updateItems } from '../util/common.js';
+import { sortingByDay, sortingByTime, sortingByPrice } from '../util/task.js';
 
 export default class EventsPresenter {
   #eventsListView = new EventsListView();
-  #sortView = new SortView();
   #noEventView = new NoEventView();
+  #sortView = null;
   #eventPresenter = null;
   #eventsContainer = null;
   #eventsModel = null;
@@ -16,6 +18,7 @@ export default class EventsPresenter {
   #offersByIdData = null;
   #getDestinationsById = null;
   #eventPresenters = new Map();
+  #currentSortType = SortType.DAY;
 
   constructor({ eventsContainer, eventsModel }) {
     this.#eventsContainer = eventsContainer;
@@ -23,7 +26,7 @@ export default class EventsPresenter {
   }
 
   init() {
-    this.#pointsData = [...this.#eventsModel.points];
+    this.#pointsData = [...this.#eventsModel.points].sort(sortingByDay);
     this.#offersByIdData = structuredClone(this.#eventsModel.offersById);
     this.#getDestinationsById = structuredClone(this.#eventsModel.destinationsById);
 
@@ -40,8 +43,18 @@ export default class EventsPresenter {
   };
 
   #renderSort() {
+    this.#sortView = new SortView({ onSortItemChange: this.#onSortItemChange });
     render(this.#sortView, this.#eventsContainer);
   }
+
+  #onSortItemChange = (sortType) => {
+    if (this.#currentSortType !== sortType) {
+      this.#currentSortType = sortType;
+      this.#sortEvents(sortType);
+      this.#clearEvents();
+      this.#renderEventsList();
+    }
+  };
 
   #renderEvent(dataEvent) {
     this.#eventPresenter = new EventPresenter({ onEventItemChange: this.#onEventItemChange, eventsListElement: this.#eventsListView.element, resetViews: this.#resetViews });
@@ -49,9 +62,23 @@ export default class EventsPresenter {
     this.#eventPresenters.set(dataEvent.point.id, this.#eventPresenter);
   }
 
-  #clearEvent(event) {
-    this.#eventPresenters.get(event.point.id).destroy();
-    this.#eventPresenters.delete(event.point.id);
+  #clearEvents() {
+    this.#eventPresenters.forEach((eventPresenter) => eventPresenter.destroy());
+    this.#eventPresenters.clear();
+  }
+
+  #sortEvents(sortType) {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#pointsData.sort(sortingByDay);
+        break;
+      case SortType.TIME:
+        this.#pointsData.sort(sortingByTime);
+        break;
+      case SortType.PRICE:
+        this.#pointsData.sort(sortingByPrice);
+        break;
+    }
   }
 
   #renderEventsList() {
