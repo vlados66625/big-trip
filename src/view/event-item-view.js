@@ -1,20 +1,20 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatsDate, calculatesDurationDate } from '../util/task.js';
-import { DATE_FORMAT } from '../const.js';
+import { DateFormat } from '../const.js';
 
 const createEventsItemViewTemplate = ({ point, offers, destinations }) =>
   `<li class="trip-events__item">
        <div class="event">
-         <time class="event__date" datetime="${formatsDate(point.dateFrom, DATE_FORMAT.DATA)}">${formatsDate(point.dateFrom, DATE_FORMAT.SHORT_DATE)}</time>
+         <time class="event__date" datetime="${formatsDate(point.dateFrom, DateFormat.DATA)}">${formatsDate(point.dateFrom, DateFormat.SHORT_DATE)}</time>
          <div class="event__type">
            <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
          </div>
-         <h3 class="event__title">${point.type} ${destinations[point.destination].name}</h3>
+         <h3 class="event__title">${point.type} ${destinations[point.destination]?.name}</h3>
          <div class="event__schedule">
            <p class="event__time">
-             <time class="event__start-time" datetime="${formatsDate(point.dateFrom, DATE_FORMAT.FULL_DATETIME_Y_M_D)}">${formatsDate(point.dateFrom, DATE_FORMAT.TIME)}</time>
+             <time class="event__start-time" datetime="${formatsDate(point.dateFrom, DateFormat.FULL_DATETIME_Y_M_D)}">${formatsDate(point.dateFrom, DateFormat.TIME)}</time>
              &mdash;
-             <time class="event__end-time" datetime="${formatsDate(point.dateTo, DATE_FORMAT.FULL_DATETIME_Y_M_D)}">${formatsDate(point.dateTo, DATE_FORMAT.TIME)}</time >
+             <time class="event__end-time" datetime="${formatsDate(point.dateTo, DateFormat.FULL_DATETIME_Y_M_D)}">${formatsDate(point.dateTo, DateFormat.TIME)}</time >
            </p >
     <p class="event__duration">${calculatesDurationDate(point.dateFrom, point.dateTo)}</p>
          </div >
@@ -47,17 +47,17 @@ export default class EventItemView extends AbstractView {
   #offers = null;
   #destinations = null;
   #onRollupClick = null;
-  #onEventChange = null;
+  #onEventFavoriteBtnClick = null;
 
-  constructor({ point, offers, destinations, onRollupClick, onEventChange }) {
+  constructor({ point, offers, destinations, onRollupClick, onEventFavoriteBtnClick }) {
     super();
     this.#point = point;
     this.#offers = offers;
     this.#destinations = destinations;
     this.#onRollupClick = onRollupClick;
-    this.#onEventChange = onEventChange;
+    this.#onEventFavoriteBtnClick = onEventFavoriteBtnClick;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onRollupClick);
-    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onEventChange);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onEventFavoriteBtnClick);
   }
 
   get template() {

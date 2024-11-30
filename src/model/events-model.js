@@ -27,6 +27,7 @@ export default class EventsModel {
           id: offer.id,
           title: offer.title,
           price: offer.price,
+          type: offersByType.type,
         };
       });
 
