@@ -43,7 +43,7 @@ const createEventsEditDestinationPhotoTemplate = ({ pointDestination }) => {
  <div class="event__photos-container">
    <div class="event__photos-tape">
    ${pointDestination.pictures.map((picture) =>`
-     <img class="event__photo" src="${picture.src}" alt="${picture.alt}">
+     <img class="event__photo" src="${picture.src}" alt="${picture.description}">
     `).join('')}
    </div>
  </div>
