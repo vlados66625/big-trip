@@ -2,6 +2,57 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { DateFormat, TypeEvent } from '../const.js';
 import { formatsDate, convertsDateToIso } from '../util/task.js';
 
+const createEventsEditOffersTemplate = ({ point, offers, typeEvent, pointOffers }) => {
+  const fiterOffers = Object.values(offers).filter((offer) => offer.type === typeEvent);
+  if (fiterOffers.length !== 0) {
+    return (
+      `<section class="event__section  event__section--offers">
+                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+                    <div class="event__available-offers">
+
+                      ${fiterOffers.map((offerByType, indexOffer) =>
+        `<div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="offer-${indexOffer}-${point.id}" type="checkbox" data-offer-id="${offerByType.id}" name="${offerByType.title}" ${pointOffers.find((pointOffer) => offerByType.id === pointOffer) ? 'checked' : ''}>
+          <label class="event__offer-label" for="offer-${indexOffer}-${point.id}">
+            <span class="event__offer-title">${offerByType.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offerByType.price}</span>
+          </label>
+     </div>`).join('')}
+                  </section>`
+    );
+  } else {
+    return '';
+  }
+};
+const createEventsEditDestinationTemplate = ({ pointDestination }) => {
+  if (pointDestination?.description) {
+    return `
+  <section class="event__section  event__section--destination">
+    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${pointDestination?.description}</p>
+  </section>
+  `;
+  }
+};
+
+const createEventsEditDestinationPhotoTemplate = ({ pointDestination }) => {
+  if (pointDestination?.pictures && pointDestination?.pictures?.length !== 0) {
+    return `
+ <div class="event__photos-container">
+   <div class="event__photos-tape">
+   ${pointDestination.pictures.map((picture) =>`
+     <img class="event__photo" src="${picture.src}" alt="${picture.alt}">
+    `).join('')}
+   </div>
+ </div>
+`;
+  } else {
+    return '';
+  }
+};
+
 const createEventsEditViewTemplate = ({ point, offers, destinations, typeEvent, pointDestination, pointOffers }) =>
   `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -59,26 +110,10 @@ const createEventsEditViewTemplate = ({ point, offers, destinations, typeEvent, 
                   </button>
                 </header>
                 <section class="event__details">
-                  <section class="event__section  event__section--offers">
-                    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-                    <div class="event__available-offers">
-
-                      ${pointOffers.map((offerId, indexOffer) =>
-    `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="offer-${indexOffer}-${point.id}" type="checkbox" name="${offers[offerId].title}">
-          <label class="event__offer-label" for="offer-${indexOffer}-${point.id}">
-            <span class="event__offer-title">${offers[offerId].title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offers[offerId].price}</span>
-          </label>
-     </div>`).join('')}
-                  </section>
-
-                  <section class="event__section  event__section--destination">
-                    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">${pointDestination?.description}</p>
-                  </section>
+               ${createEventsEditOffersTemplate({ point, offers, typeEvent, pointOffers })}
+               ${createEventsEditDestinationTemplate({ pointDestination })}
+               ${createEventsEditDestinationPhotoTemplate({ pointDestination })}
                 </section>
               </form>
             </li>`;
@@ -117,8 +152,14 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onEventEditFormItemSubmit = (evt) => {
     evt.preventDefault();
+    this.#setStateOffersSelected();
     this.#onEventEditFormSubmit(this.#updateStateToData(this._state).point);
   };
+
+  #setStateOffersSelected() {
+    const offersSelected = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked')).map((offerSelected) => offerSelected.dataset.offerId);
+    this._setState({ pointOffers: offersSelected });
+  }
 
   #onRollupBtnClick = (evt) => {
     evt.preventDefault();
@@ -127,8 +168,8 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onEventTypeGroupChange = (evt) => {
     evt.preventDefault();
-    const offers = Object.values(this.#offers).filter((offer) => offer.type === evt.target.dataset.eventType).map((offer) => offer.id);
-    this.updateElement({ typeEvent: evt.target.dataset.eventType, pointOffers: offers });
+    this._setState({ pointOffers: [] });
+    this.updateElement({ typeEvent: evt.target.dataset.eventType });
   };
 
   #onEventInputDestinationChange = (evt) => {

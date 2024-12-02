@@ -22,7 +22,7 @@ const createEventsItemViewTemplate = ({ point, offers, destinations }) =>
            &euro;&nbsp;<span class="event__price-value">${point.basePrice}</span>
          </p>
          <h4 class="visually-hidden">Offers:</h4>
-         <ul class="event__selected-offers">
+    ${point.offers.length !== 0 ? '<ul class="event__selected-offers">' : ''}
     ${point.offers.map((offerId) =>
     `<li class="event__offer">
          <span class="event__offer-title">${offers[offerId].title}</span>
