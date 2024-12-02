@@ -1,4 +1,4 @@
-const DATE_FORMAT = {
+const DateFormat = {
   TIME: 'HH:mm',
   DATA: 'YYYY-MM-DD',
   SHORT_DATE: 'MMM DD',
@@ -29,4 +29,11 @@ const SortType = {
   PRICE: 'price',
 };
 
-export { DATE_FORMAT, EVENT_COUNT, FilterType, Mode, SortType };
+const TypeEvent = {
+  TAXI: 'taxi',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECK_IN: 'check-in',
+};
+
+export { DateFormat, EVENT_COUNT, FilterType, Mode, SortType, TypeEvent };

@@ -1,17 +1,19 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import { DATE_FORMAT } from '../const.js';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { DateFormat } from '../const.js';
 
 dayjs.extend(duration);
+dayjs.extend(customParseFormat);
 
 
 const formatsDate = (date, format) => date ? dayjs(date).format(format) : '';
 
 const calculatesDurationDate = (dateFrom, dateTo) => {
   const difference = dayjs.duration(dayjs(dateTo).diff(dayjs(dateFrom)));
-  const days = difference.format(DATE_FORMAT.DAYS);
-  const hours = difference.format(DATE_FORMAT.HOURS);
-  const minutes = difference.format(DATE_FORMAT.MINUTES);
+  const days = difference.format(DateFormat.DAYS);
+  const hours = difference.format(DateFormat.HOURS);
+  const minutes = difference.format(DateFormat.MINUTES);
   return `${days !== '00' ? `${days}D` : ''} ${hours !== '00' ? `${hours}H` : ''} ${minutes}M`;
 };
 
@@ -34,4 +36,6 @@ const sortingByTime = (pointsDataA, pointsDataB) => {
 
 const sortingByPrice = (pointsDataA, pointsDataB) => pointsDataB.basePrice - pointsDataA.basePrice;
 
-export { formatsDate, calculatesDurationDate, sortingByDay, sortingByTime, sortingByPrice };
+const convertsDateToIso = (date) => dayjs(date, DateFormat.FULL_DATETIME_D_M_Y, true).toISOString();
+
+export { formatsDate, calculatesDurationDate, sortingByDay, sortingByTime, sortingByPrice, convertsDateToIso };

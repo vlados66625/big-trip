@@ -194,8 +194,20 @@ const Destinations = [
     name: 'Chamonix',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-        description: 'Chamonix parliament building'
+        src: 'https://20.objects.htmlacademy.pro/static/destinations/19.jpg',
+        description: 'Naples a true asian pearl'
+      },
+      {
+        src: 'https://20.objects.htmlacademy.pro/static/destinations/16.jpg',
+        description: 'Naples full of of cozy canteens where you can try the best coffee in the Middle East'
+      },
+      {
+        src: 'https://20.objects.htmlacademy.pro/static/destinations/20.jpg',
+        description: 'Naples a true asian pearl'
+      },
+      {
+        src: 'https://20.objects.htmlacademy.pro/static/destinations/8.jpg',
+        description: 'Naples middle-eastern paradise'
       }
     ]
   },
@@ -205,8 +217,16 @@ const Destinations = [
     name: 'Paris',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-        description: 'The Eiffel Tower in Paris'
+        src: 'https://20.objects.htmlacademy.pro/static/destinations/8.jpg',
+        description: 'Naples middle-eastern paradise'
+      },
+      {
+        src: 'https://20.objects.htmlacademy.pro/static/destinations/7.jpg',
+        description: 'Naples with crowded streets'
+      },
+      {
+        src: 'https://20.objects.htmlacademy.pro/static/destinations/19.jpg',
+        description: 'Naples a true asian pearl'
       }
     ]
   },
@@ -214,12 +234,7 @@ const Destinations = [
     id: 'bf97cb75-b2ef-4d74-a83f-0e527b920e22',
     description: 'Berlin, a vibrant city with rich history and modern culture.',
     name: 'Berlin',
-    pictures: [
-      {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
-        description: 'Brandenburg Gate in Berlin'
-      }
-    ]
+    pictures: []
   },
   {
     id: 'e5d8a4b1-1d0b-4c4d-9f5c-3d273a5dfb6a',
@@ -227,7 +242,7 @@ const Destinations = [
     name: 'Tokyo',
     pictures: [
       {
-        src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+        src: 'https://20.objects.htmlacademy.pro/static/destinations/16.jpg',
         description: 'Tokyo Tower in the evening'
       }
     ]
