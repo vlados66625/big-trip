@@ -125,7 +125,8 @@ export default class EventEditView extends AbstractStatefulView {
   #destinations = null;
   #onEventEditFormSubmit = null;
   #closeEditForm = null;
-  #datepicker = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
   constructor({ point, offers, destinations, onEventEditFormSubmit, closeEditForm }) {
     super();
@@ -144,8 +145,8 @@ export default class EventEditView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#onEventTypeGroupChange);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#onEventInputDestinationChange);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#onEventInputPriceChange);
-    this.#setDatepickerStart();
-    this.#setDatepickerEnd();
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
   }
 
   resetEventEditView = () => {
@@ -154,14 +155,18 @@ export default class EventEditView extends AbstractStatefulView {
 
   removeElement() {
     super.removeElement();
-    if (this.#datepicker) {
-      this.#datepicker.destroy();
-      this.#datepicker = null;
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
     }
   }
 
-  #setDatepickerStart() {
-    this.#datepicker = flatpickr(
+  #setDatepickerFrom() {
+    this.#datepickerFrom = flatpickr(
       this.element.querySelector(`#event-start-time-${this.#point.id}`),
       {
         dateFormat: 'd/m/y H:i',
@@ -177,8 +182,8 @@ export default class EventEditView extends AbstractStatefulView {
     );
   }
 
-  #setDatepickerEnd() {
-    this.#datepicker = flatpickr(
+  #setDatepickerTo() {
+    this.#datepickerTo = flatpickr(
       this.element.querySelector(`#event-end-time-${this.#point.id}`),
       {
         dateFormat: 'd/m/y H:i',
