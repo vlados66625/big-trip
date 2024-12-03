@@ -24,7 +24,7 @@ export default class EventPresenter {
     const prevEventEdit = this.#eventEdit;
     const prevEventItem = this.#eventItem;
 
-    this.#eventEdit = new EventEditView({ ...this.#dataEvent, onEventEditFormSubmit: this.#onEventEditFormSubmit, closingWithoutSaving: this.#closingWithoutSaving });
+    this.#eventEdit = new EventEditView({ ...this.#dataEvent, onEventEditFormSubmit: this.#onEventEditFormSubmit, closeEditForm: this.#closeEditForm });
     this.#eventItem = new EventItemView({ ...this.#dataEvent, onRollupClick: this.#onRollupClick, onEventFavoriteBtnClick: this.#onEventFavoriteBtnClick });
 
     if (prevEventEdit === null && prevEventItem === null) {
@@ -75,11 +75,11 @@ export default class EventPresenter {
 
   #onEventEditEscape = (evt) => {
     if (evt.key === 'Escape') {
-      this.#closingWithoutSaving();
+      this.#closeEditForm();
     }
   };
 
-  #closingWithoutSaving = () => {
+  #closeEditForm = () => {
     this.#eventEdit.resetEventEditView();
     this.#changeFormToCard();
   };
