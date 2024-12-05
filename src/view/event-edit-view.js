@@ -6,21 +6,22 @@ import 'flatpickr/dist/flatpickr.min.css';
 const createEventsEditOffersTemplate = ({ point, offers, typeEvent, pointOffers }) => {
   const fiterOffers = Object.values(offers).filter((offer) => offer.type === typeEvent);
   if (fiterOffers.length !== 0) {
+
+    const offersTemplate = fiterOffers.map((offerByType, indexOffer) =>
+      `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="offer-${indexOffer}-${point.id}" type="checkbox" data-offer-id="${offerByType.id}" name="${offerByType.title}" ${pointOffers.find((pointOffer) => offerByType.id === pointOffer) ? 'checked' : ''}>
+        <label class="event__offer-label" for="offer-${indexOffer}-${point.id}">
+          <span class="event__offer-title">${offerByType.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offerByType.price}</span>
+        </label>
+   </div>`).join('');
+
     return (
       `<section class="event__section  event__section--offers">
                     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
                     <div class="event__available-offers">
-
-                      ${fiterOffers.map((offerByType, indexOffer) =>
-        `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="offer-${indexOffer}-${point.id}" type="checkbox" data-offer-id="${offerByType.id}" name="${offerByType.title}" ${pointOffers.find((pointOffer) => offerByType.id === pointOffer) ? 'checked' : ''}>
-          <label class="event__offer-label" for="offer-${indexOffer}-${point.id}">
-            <span class="event__offer-title">${offerByType.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offerByType.price}</span>
-          </label>
-     </div>`).join('')}
+                      ${offersTemplate}
                   </section>`
     );
   } else {
@@ -40,12 +41,15 @@ const createEventsEditDestinationTemplate = ({ pointDestination }) => {
 
 const createEventsEditDestinationPhotoTemplate = ({ pointDestination }) => {
   if (pointDestination?.pictures && pointDestination?.pictures?.length !== 0) {
+
+    const picturesTemplate = pointDestination.pictures.map((picture) => `
+     <img class="event__photo" src="${picture.src}" alt="${picture.description}">
+    `).join('');
+
     return `
  <div class="event__photos-container">
    <div class="event__photos-tape">
-   ${pointDestination.pictures.map((picture) => `
-     <img class="event__photo" src="${picture.src}" alt="${picture.description}">
-    `).join('')}
+   ${picturesTemplate}
    </div>
  </div>
 `;
@@ -155,13 +159,14 @@ export default class EventEditView extends AbstractStatefulView {
 
   removeElement() {
     super.removeElement();
-    if (this.#datepickerFrom) {
-      this.#datepickerFrom.destroy();
-      this.#datepickerFrom = null;
-    }
-    if (this.#datepickerTo) {
-      this.#datepickerTo.destroy();
-      this.#datepickerTo = null;
+    this.#removeDatepicker(this.#datepickerFrom);
+    this.#removeDatepicker(this.#datepickerTo);
+  }
+
+  #removeDatepicker(datepicker) {
+    if (datepicker) {
+      datepicker.destroy();
+      datepicker = null;
     }
   }
 
@@ -169,15 +174,10 @@ export default class EventEditView extends AbstractStatefulView {
     this.#datepickerFrom = flatpickr(
       this.element.querySelector(`#event-start-time-${this.#point.id}`),
       {
-        dateFormat: 'd/m/y H:i',
+        ...this.#datepickerParameters,
         defaultDate: this._state.pointDateFrom,
         onChange: this.#handleDateStartChange,
-        enableTime: true,
         maxDate: this._state.pointDateTo,
-        locale: {
-          firstDayOfWeek: 1,
-        },
-        'time_24hr': true
       },
     );
   }
@@ -186,18 +186,22 @@ export default class EventEditView extends AbstractStatefulView {
     this.#datepickerTo = flatpickr(
       this.element.querySelector(`#event-end-time-${this.#point.id}`),
       {
-        dateFormat: 'd/m/y H:i',
+        ...this.#datepickerParameters,
         defaultDate: this._state.pointDateTo,
         onChange: this.#handleDateEndChange,
-        enableTime: true,
         minDate: this._state.pointDateFrom,
-        locale: {
-          firstDayOfWeek: 1,
-        },
-        'time_24hr': true
       },
     );
   }
+
+  #datepickerParameters = {
+    dateFormat: 'd/m/y H:i',
+    enableTime: true,
+    locale: {
+      firstDayOfWeek: 1,
+    },
+    'time_24hr': true
+  };
 
   #handleDateStartChange = ([userDate]) => {
     this.updateElement({ pointDateFrom: userDate.toISOString() });
