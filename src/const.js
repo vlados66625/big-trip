@@ -1,3 +1,5 @@
+import { nowDateTime } from './util/task.js';
+
 const DateFormat = {
   TIME: 'HH:mm',
   DATA: 'YYYY-MM-DD',
@@ -36,4 +38,32 @@ const TypeEvent = {
   CHECK_IN: 'check-in',
 };
 
-export { DateFormat, EVENT_COUNT, FilterType, Mode, SortType, TypeEvent };
+const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const NoEventsTexts = {
+  [FilterType.EVERTHING]: 'Click New Event to create your first point',
+  [FilterType.FUTURE]: 'There are no past events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.PAST]: 'There are no future events now'
+};
+
+const defaultPoint = {
+  basePrice: '',
+  dateFrom: nowDateTime,
+  dateTo: nowDateTime,
+  isFavorite: false,
+  offers: [],
+  type: 'taxi'
+};
+
+export { DateFormat, EVENT_COUNT, FilterType, Mode, SortType, TypeEvent, UserAction, UpdateType, NoEventsTexts, defaultPoint };

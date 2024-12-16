@@ -18,7 +18,7 @@ const Points = [
     id: 'bbd77e9c-8ef0-42d5-b0e3-36fa3de073df',
     basePrice: 1500,
     dateFrom: '2024-08-15T10:45:23.000Z',
-    dateTo: '2024-08-15T13:30:00.000Z',
+    dateTo: '2024-12-15T13:30:00.000Z',
     destination: 'f7a5cb63-c1ee-4c32-9b7d-0f525e920e87',
     isFavorite: true,
     offers: [
