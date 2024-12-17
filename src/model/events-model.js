@@ -7,6 +7,17 @@ export default class EventsModel extends Observable {
   #points = Array.from(new Set(Array.from({ length: EVENT_COUNT }, getRandomEvent)));
   #destinations = Destinations;
   #offers = Offers;
+  #eventsApiService = null;
+
+  constructor({ eventsApiService }) {
+    super();
+    this.#eventsApiService = eventsApiService;
+
+    this.#eventsApiService.events
+      .then((events) => {
+        console.log(events.map(this.#adaptToClient));
+      });
+  }
 
   get destinationsById() {
     return this.#destinations.reduce((destinationsById, destination) => {
@@ -78,5 +89,22 @@ export default class EventsModel extends Observable {
     ];
 
     this._notify(updateType);
+  }
+
+  #adaptToClient(event) {
+    const adapterEvent = {
+      ...event,
+      basePrice: event['base_price'],
+      dateFrom: event['date_from'],
+      dateTo: event['date_to'],
+      isFavorite: event['is_favorite'],
+    };
+
+    delete adapterEvent['base_price'];
+    delete adapterEvent['date_from'];
+    delete adapterEvent['date_to'];
+    delete adapterEvent['is_favorite'];
+
+    return adapterEvent;
   }
 }

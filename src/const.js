@@ -66,4 +66,24 @@ const defaultPoint = {
   type: 'taxi'
 };
 
-export { DateFormat, EVENT_COUNT, FilterType, Mode, SortType, TypeEvent, UserAction, UpdateType, NoEventsTexts, defaultPoint };
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+};
+
+const Routes = {
+  POINTS_ROUTE: 'points',
+  DESTINATIONS_ROUTE: 'destinations',
+  OFFERS_ROUTE: 'offers'
+};
+
+const END_POINT = 'https://20.objects.htmlacademy.pro/big-trip';
+
+const AUTHORIZATION = 'Basic kf92mxqpltzv';
+
+export {
+  DateFormat, EVENT_COUNT, FilterType,
+  Mode, SortType, TypeEvent, UserAction, UpdateType,
+  NoEventsTexts, defaultPoint, Method, Routes,
+  END_POINT, AUTHORIZATION
+};
