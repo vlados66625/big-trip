@@ -11,8 +11,6 @@ const DateFormat = {
   FULL_DATETIME_D_M_Y: 'DD/MM/YY HH:mm'
 };
 
-const EVENT_COUNT = 7;
-
 const FilterType = {
   EVERTHING: 'everthing',
   FUTURE: 'future',
@@ -33,9 +31,14 @@ const SortType = {
 
 const TypeEvent = {
   TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
   DRIVE: 'drive',
   FLIGHT: 'flight',
   CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant',
 };
 
 const UserAction = {
@@ -48,6 +51,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 const NoEventsTexts = {
@@ -82,7 +86,7 @@ const END_POINT = 'https://20.objects.htmlacademy.pro/big-trip';
 const AUTHORIZATION = 'Basic kf92mxqpltzv';
 
 export {
-  DateFormat, EVENT_COUNT, FilterType,
+  DateFormat, FilterType,
   Mode, SortType, TypeEvent, UserAction, UpdateType,
   NoEventsTexts, defaultPoint, Method, Routes,
   END_POINT, AUTHORIZATION

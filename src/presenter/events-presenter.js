@@ -2,6 +2,7 @@ import { remove, render } from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
+import EventsLoadingView from '../view/events-loading-view.js';
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
@@ -23,6 +24,8 @@ export default class EventsPresenter {
   #currentSortType = SortType.DAY;
   #currentFilter = FilterType.EVERTHING;
   #newEventPresenter = null;
+  #isEventsLoading = true;
+  #eventsLoadingView = new EventsLoadingView();
 
   constructor({ eventsContainer, eventsModel, filterModel, handleNewEventClose }) {
     this.#eventsContainer = eventsContainer;
@@ -31,17 +34,6 @@ export default class EventsPresenter {
     this.#handleNewEventClose = handleNewEventClose;
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-
-    this.#offersByIdData = structuredClone(this.#eventsModel.offersById);
-    this.#getDestinationsById = structuredClone(this.#eventsModel.destinationsById);
-
-    this.#newEventPresenter = new NewEventPresenter({
-      eventsContainer: this.#eventsListView.element,
-      handleNewEventClose: this.#handleNewEventClose,
-      handleViewAction: this.#handleViewAction,
-      offers: this.#offersByIdData,
-      destinations: this.#getDestinationsById
-    });
   }
 
   init() {
@@ -92,8 +84,26 @@ export default class EventsPresenter {
         this.#clearEventsSection();
         this.#renderPageEvents({ rerenderSort: true });
         break;
+      case UpdateType.INIT:
+        this.#isEventsLoading = false;
+        remove(this.#eventsLoadingView);
+        this.#offersByIdData = structuredClone(this.#eventsModel.offersById);
+        this.#getDestinationsById = structuredClone(this.#eventsModel.destinationsById);
+        this.#initNewEventPresenter();
+        this.#renderPageEvents();
+        break;
     }
   };
+
+  #initNewEventPresenter() {
+    this.#newEventPresenter = new NewEventPresenter({
+      eventsContainer: this.#eventsListView.element,
+      handleNewEventClose: this.#handleNewEventClose,
+      handleViewAction: this.#handleViewAction,
+      offers: this.#offersByIdData,
+      destinations: this.#getDestinationsById
+    });
+  }
 
   #renderSort() {
     this.#sortView = new SortView({ onSortItemChange: this.#onSortItemChange });
@@ -124,7 +134,10 @@ export default class EventsPresenter {
     if (this.#noEventView) {
       remove(this.#noEventView);
     }
+  }
 
+  #renderEventsLoading() {
+    render(this.#eventsLoadingView, this.#eventsContainer);
   }
 
   #renderEventsList() {
@@ -140,6 +153,11 @@ export default class EventsPresenter {
   }
 
   #renderPageEvents({ rerenderSort = false } = {}) {
+    if (this.#isEventsLoading) {
+      this.#renderEventsLoading();
+      return;
+    }
+
     if (this.point.length !== 0) {
       if (rerenderSort) {
         remove(this.#sortView);

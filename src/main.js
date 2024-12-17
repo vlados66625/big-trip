@@ -34,5 +34,11 @@ function handleNewEventClose() {
 }
 
 render(newEventButtonComponent, tripMain);
+
+eventsModel.init()
+  .finally(() => {
+    handleNewEventClose();
+  });
+
 filterPresenter.init();
 eventsPresenter.init();

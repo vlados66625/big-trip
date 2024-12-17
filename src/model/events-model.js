@@ -1,22 +1,28 @@
-import { getRandomEvent, Destinations, Offers } from '../mock/event.js';
 import Observable from '../framework/observable.js';
-import { EVENT_COUNT } from '../const.js';
+import { UpdateType } from '../const.js';
 
 
 export default class EventsModel extends Observable {
-  #points = Array.from(new Set(Array.from({ length: EVENT_COUNT }, getRandomEvent)));
-  #destinations = Destinations;
-  #offers = Offers;
+  #points = [];
+  #destinations = [];
+  #offers = [];
   #eventsApiService = null;
 
   constructor({ eventsApiService }) {
     super();
     this.#eventsApiService = eventsApiService;
+  }
 
-    this.#eventsApiService.events
-      .then((events) => {
-        console.log(events.map(this.#adaptToClient));
-      });
+  async init() {
+    try {
+      const events = await this.#eventsApiService.events;
+      this.#points = events.map(this.#adaptToClient);
+      this.#destinations = await this.#eventsApiService.destinations;
+      this.#offers = await this.#eventsApiService.offers;
+    } catch (err) {
+      this.#points = [];
+    }
+    this._notify(UpdateType.INIT);
   }
 
   get destinationsById() {
@@ -51,20 +57,28 @@ export default class EventsModel extends Observable {
     return this.#points;
   }
 
-  updatePoint(updateType, update) {
+  async updatePoint(updateType, update) {
     const updateIndex = this.points.findIndex((item) => item.id === update.id);
 
     if (updateIndex === -1) {
       throw new Error('Не удалось обновить не найденное событие');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, updateIndex),
-      update,
-      ...this.#points.slice(updateIndex + 1)
-    ];
+    try {
+      const responseUpdateEvent = await this.#eventsApiService.updateEvent(update);
+      const updateEvent = this.#adaptToClient(responseUpdateEvent);
 
-    this._notify(updateType, update);
+
+      this.#points = [
+        ...this.#points.slice(0, updateIndex),
+        updateEvent,
+        ...this.#points.slice(updateIndex + 1)
+      ];
+
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Не удалось обновить событие');
+    }
   }
 
   addPoint(updateType, update) {

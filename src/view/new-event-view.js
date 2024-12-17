@@ -256,12 +256,15 @@ export default class NewEventView extends AbstractStatefulView {
   }
 
   #updateDataToState() {
+    console.log(this.#point)
+    console.log(this.#offers)
+    console.log(this.#destinations)
     return {
       point: this.#point,
       offers: this.#offers,
       destinations: this.#destinations,
       typeEvent: this.#point.type,
-      pointDestination: this.#destinations[this.#point.destination],
+      pointDestination: this.#destinations[this.#point?.destination],
       pointDateFrom: this.#point.dateFrom,
       pointDateTo: this.#point.dateTo,
       pointBasePrice: this.#point.basePrice,

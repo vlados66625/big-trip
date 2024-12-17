@@ -19,7 +19,7 @@ export default class EventsApiService extends ApiService {
 
   updateEvent(event) {
     return this._load({
-      url: `${Routes.DESTINATIONS_ROUTE}/${event.id}`,
+      url: `${Routes.POINTS_ROUTE}/${event.id}`,
       method: Method.PUT,
       body: JSON.stringify(this.#adaptToServer(event)),
       headers: new Headers({ 'Content-Type': 'application/json' }),
