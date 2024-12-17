@@ -2,6 +2,7 @@ import { remove, render } from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
+import NewEventButtonView from '../view/new-event-button-view.js';
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
@@ -10,13 +11,14 @@ import { filter } from '../util/filter.js';
 
 export default class EventsPresenter {
   #eventsListView = new EventsListView();
+  #newEventButtonView = null;
   #noEventView = null;
   #sortView = null;
   #eventPresenter = null;
   #eventsContainer = null;
+  #tripMainContainer = null;
   #eventsModel = null;
   #filterModel = null;
-  #handleNewEventClose = null;
   #offersByIdData = null;
   #getDestinationsById = null;
   #eventPresenters = new Map();
@@ -24,11 +26,11 @@ export default class EventsPresenter {
   #currentFilter = FilterType.EVERTHING;
   #newEventPresenter = null;
 
-  constructor({ eventsContainer, eventsModel, filterModel, handleNewEventClose }) {
+  constructor({ eventsContainer, eventsModel, filterModel, tripMainContainer }) {
     this.#eventsContainer = eventsContainer;
+    this.#tripMainContainer = tripMainContainer;
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
-    this.#handleNewEventClose = handleNewEventClose;
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
@@ -46,6 +48,8 @@ export default class EventsPresenter {
 
   init() {
     this.#renderPageEvents({ rerenderSort: false });
+    this.#newEventButtonView = new NewEventButtonView({ handleNewEventButtonClick: this.#handleNewEventButtonClick });
+    render(this.#newEventButtonView, this.#tripMainContainer);
   }
 
   get points() {
@@ -157,10 +161,19 @@ export default class EventsPresenter {
     this.#renderEventsList();
   }
 
-  createEvent() {
+  #createEvent() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERTHING);
     this.#newEventPresenter.init();
   }
+
+  #handleNewEventButtonClick = () => {
+    this.#newEventButtonView.element.disabled = true;
+    this.#createEvent();
+  };
+
+  #handleNewEventClose = () => {
+    this.#newEventButtonView.element.disabled = false;
+  };
 }
 
