@@ -17,7 +17,6 @@ const eventsPresenter = new EventsPresenter({ eventsContainer: eventsSection, ev
 
 render(new TripInfoView(), tripMain, RenderPosition.AFTERBEGIN);
 
-
 const newEventButtonComponent = new NewEventButtonView({ handleNewEventButtonClick });
 
 function handleNewEventButtonClick() {

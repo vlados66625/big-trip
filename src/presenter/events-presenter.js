@@ -48,7 +48,7 @@ export default class EventsPresenter {
     this.#renderPageEvents({ rerenderSort: false });
   }
 
-  get point() {
+  get points() {
     this.#currentFilter = this.#filterModel.filter;
     const filteredPoints = filter[this.#currentFilter](this.#eventsModel.points);
     switch (this.#currentSortType) {
@@ -129,9 +129,9 @@ export default class EventsPresenter {
 
   #renderEventsList() {
     render(this.#eventsListView, this.#eventsContainer);
-    for (let i = 0; i < this.point.length; i++) {
-      this.#renderEvent({ point: this.point[i], offers: this.#offersByIdData, destinations: this.#getDestinationsById });
-    }
+    this.points.forEach((point) => {
+      this.#renderEvent({ point, offers: this.#offersByIdData, destinations: this.#getDestinationsById });
+    });
   }
 
   #renderNoEvent() {
@@ -140,18 +140,21 @@ export default class EventsPresenter {
   }
 
   #renderPageEvents({ rerenderSort = false } = {}) {
-    if (this.point.length !== 0) {
-      if (rerenderSort) {
-        remove(this.#sortView);
-        this.#renderSort();
-      }
-      if (!this.#sortView) {
-        this.#renderSort();
-      }
-      this.#renderEventsList();
-    } else {
+    if (!this.points.length) {
       this.#renderNoEvent();
+      return;
     }
+
+    if (rerenderSort) {
+      remove(this.#sortView);
+      this.#renderSort();
+    }
+
+    if (!this.#sortView) {
+      this.#renderSort();
+    }
+
+    this.#renderEventsList();
   }
 
   createEvent() {
