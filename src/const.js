@@ -1,4 +1,4 @@
-import { nowDateTime } from './util/task.js';
+import { nowDateTime, nowDateTimeAddMinute } from './util/task.js';
 
 const DateFormat = {
   TIME: 'HH:mm',
@@ -10,8 +10,6 @@ const DateFormat = {
   DAYS: 'DD',
   FULL_DATETIME_D_M_Y: 'DD/MM/YY HH:mm'
 };
-
-const EVENT_COUNT = 7;
 
 const FilterType = {
   EVERTHING: 'everthing',
@@ -33,9 +31,14 @@ const SortType = {
 
 const TypeEvent = {
   TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
   DRIVE: 'drive',
   FLIGHT: 'flight',
   CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant',
 };
 
 const UserAction = {
@@ -48,6 +51,8 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  ERROR: 'ERROR'
 };
 
 const NoEventsTexts = {
@@ -60,10 +65,37 @@ const NoEventsTexts = {
 const defaultPoint = {
   basePrice: '',
   dateFrom: nowDateTime,
-  dateTo: nowDateTime,
+  dateTo: nowDateTimeAddMinute,
   isFavorite: false,
   offers: [],
   type: 'taxi'
 };
 
-export { DateFormat, EVENT_COUNT, FilterType, Mode, SortType, TypeEvent, UserAction, UpdateType, NoEventsTexts, defaultPoint };
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+const Routes = {
+  POINTS_ROUTE: 'points',
+  DESTINATIONS_ROUTE: 'destinations',
+  OFFERS_ROUTE: 'offers'
+};
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+const END_POINT = 'https://20.objects.htmlacademy.pro/big-trip';
+
+const AUTHORIZATION = 'Basic kf92mxqpltzv';
+
+export {
+  DateFormat, FilterType,
+  Mode, SortType, TypeEvent, UserAction, UpdateType,
+  NoEventsTexts, defaultPoint, Method, Routes,
+  END_POINT, AUTHORIZATION, TimeLimit
+};

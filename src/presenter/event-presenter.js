@@ -63,18 +63,17 @@ export default class EventPresenter {
   resetView() {
     if (this.#eventMode !== Mode.VIEW) {
       this.#eventEdit.resetEventEditView();
-      this.#changeFormToCard();
+      this.changeFormToCard();
     }
   }
 
-  #changeFormToCard() {
+  changeFormToCard() {
     replace(this.#eventItem, this.#eventEdit);
     this.#eventMode = Mode.VIEW;
     window.removeEventListener('keydown', this.#onEventEditEscape);
   }
 
   #onEventEditFormSubmit = (updatePoint) => {
-    this.#changeFormToCard();
     const { point } = this.#dataEvent;
     const currentSortType = this.#returnCurrentSortType();
     let isMinorUpdate = false;
@@ -110,7 +109,7 @@ export default class EventPresenter {
 
   #closeEditForm = () => {
     this.#eventEdit.resetEventEditView();
-    this.#changeFormToCard();
+    this.changeFormToCard();
   };
 
   #handleDeleteEvent = (updatePoint) => {
@@ -126,4 +125,40 @@ export default class EventPresenter {
     UpdateType.PATCH,
     { ...this.#dataEvent.point, isFavorite: !this.#dataEvent.point.isFavorite }
   );
+
+  setSaving() {
+    if (this.#eventMode === Mode.EDIT) {
+      this.#eventEdit.updateElement({
+        isDisable: true,
+        isSaiving: true,
+        isDeleting: false,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#eventMode === Mode.EDIT) {
+      this.#eventEdit.updateElement({
+        isDisable: true,
+        isSaiving: false,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#eventMode === Mode.VIEW) {
+      this.#eventEdit.shake();
+      return;
+    }
+    const resetCardForm = () => {
+      this.#eventEdit.updateElement({
+        isDisable: false,
+        isSaiving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#eventEdit.shake(resetCardForm);
+  }
 }

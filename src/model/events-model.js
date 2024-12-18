@@ -1,12 +1,31 @@
-import { getRandomEvent, Destinations, Offers } from '../mock/event.js';
 import Observable from '../framework/observable.js';
-import { EVENT_COUNT } from '../const.js';
+import { UpdateType } from '../const.js';
 
 
 export default class EventsModel extends Observable {
-  #points = Array.from(new Set(Array.from({ length: EVENT_COUNT }, getRandomEvent)));
-  #destinations = Destinations;
-  #offers = Offers;
+  #points = [];
+  #destinations = [];
+  #offers = [];
+  #eventsApiService = null;
+
+  constructor({ eventsApiService }) {
+    super();
+    this.#eventsApiService = eventsApiService;
+  }
+
+  async init() {
+    try {
+      const events = await this.#eventsApiService.events;
+      this.#points = events.map(this.#adaptToClient);
+      this.#destinations = await this.#eventsApiService.destinations;
+      this.#offers = await this.#eventsApiService.offers;
+      this._notify(UpdateType.INIT);
+    } catch (err) {
+      this.#points = [];
+      this._notify(UpdateType.ERROR);
+      throw err;
+    }
+  }
 
   get destinationsById() {
     return this.#destinations.reduce((destinationsById, destination) => {
@@ -40,43 +59,79 @@ export default class EventsModel extends Observable {
     return this.#points;
   }
 
-  updatePoint(updateType, update) {
+  async updatePoint(updateType, update) {
     const updateIndex = this.points.findIndex((item) => item.id === update.id);
 
     if (updateIndex === -1) {
-      throw new Error('Не удалось обновить не найденное событие');
+      throw new Error('Can\'t update unexisting task');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, updateIndex),
-      update,
-      ...this.#points.slice(updateIndex + 1)
-    ];
+    try {
+      const responseUpdateEvent = await this.#eventsApiService.updateEvent(update);
+      const updateEvent = this.#adaptToClient(responseUpdateEvent);
 
-    this._notify(updateType, update);
+
+      this.#points = [
+        ...this.#points.slice(0, updateIndex),
+        updateEvent,
+        ...this.#points.slice(updateIndex + 1)
+      ];
+
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Can\'t update task');
+    }
   }
 
-  addPoint(updateType, update) {
-    this.#points = [
-      update,
-      ...this.#points,
-    ];
+  async addPoint(updateType, update) {
+    try {
+      const responseUpdateEvent = await this.#eventsApiService.addEvent(update);
+      const updateEvent = this.#adaptToClient(responseUpdateEvent);
+      this.#points = [
+        updateEvent,
+        ...this.#points,
+      ];
 
-    this._notify(updateType, update);
-  }
-
-  deletePoint(updateType, update) {
-    const updateIndex = this.points.findIndex((item) => item.id === update.id);
-
-    if (updateIndex === -1) {
-      throw new Error('Не удалось удалить не найденное событие');
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Can\'t add task');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, updateIndex),
-      ...this.#points.slice(updateIndex + 1)
-    ];
+  }
 
-    this._notify(updateType);
+  async deletePoint(updateType, update) {
+    try {
+      const updateIndex = this.points.findIndex((item) => item.id === update.id);
+      if (updateIndex === -1) {
+        throw new Error('Can\'t delete unexisting task');
+      }
+      await this.#eventsApiService.deleteEvent(update);
+
+      this.#points = [
+        ...this.#points.slice(0, updateIndex),
+        ...this.#points.slice(updateIndex + 1)
+      ];
+
+      this._notify(updateType);
+    } catch {
+      throw new Error('Can\'t delete task');
+    }
+  }
+
+  #adaptToClient(event) {
+    const adapterEvent = {
+      ...event,
+      basePrice: event['base_price'],
+      dateFrom: event['date_from'],
+      dateTo: event['date_to'],
+      isFavorite: event['is_favorite'],
+    };
+
+    delete adapterEvent['base_price'];
+    delete adapterEvent['date_from'];
+    delete adapterEvent['date_to'];
+    delete adapterEvent['is_favorite'];
+
+    return adapterEvent;
   }
 }
