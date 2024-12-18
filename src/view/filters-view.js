@@ -15,7 +15,7 @@ ${filters.map(({ type, count }) =>
        <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
      </div>`
   ).join('')}
-       <button class="visually-hidden" type="submit">Accept filter</button>
+     <button class="visually-hidden" type="submit">Accept filter</button>
    </form>`;
 
 export default class FilterView extends AbstractView {
