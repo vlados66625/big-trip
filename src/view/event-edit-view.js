@@ -90,7 +90,7 @@ const createEventsEditViewTemplate = ({ point, offers, destinations, typeEvent, 
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" ${pointDestination?.name ? '' : 'placeholder="Выберите город из списка"'} value="${pointDestination?.name || ''}" list="destination-list-${point.id}">
                     <datalist id="destination-list-${point.id}">
-                      ${Object.values(destinations).map((destination) => `<option value="${destination.name}"></option>`).join('')}
+                      ${Object.values(destinations).map((destination) => `<option value="${destination.name}">asddf</option>`).join('')}
                     </datalist>
                   </div>
 

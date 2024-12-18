@@ -26,6 +26,22 @@ export default class EventsApiService extends ApiService {
     }).then(ApiService.parseResponse);
   }
 
+  addEvent(event) {
+    return this._load({
+      url: `${Routes.POINTS_ROUTE}`,
+      method: Method.POST,
+      body: JSON.stringify(this.#adaptToServer(event)),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    }).then(ApiService.parseResponse);
+  }
+
+  deleteEvent(event) {
+    return this._load({
+      url: `${Routes.POINTS_ROUTE}/${event.id}`,
+      method: Method.DELETE,
+    });
+  }
+
   #adaptToServer(event) {
     const adaptedEvent = {
       ...event,

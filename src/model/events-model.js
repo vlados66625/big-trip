@@ -63,7 +63,7 @@ export default class EventsModel extends Observable {
     const updateIndex = this.points.findIndex((item) => item.id === update.id);
 
     if (updateIndex === -1) {
-      throw new Error('Не удалось обновить не найденное событие');
+      throw new Error('Can\'t update unexisting task');
     }
 
     try {
@@ -79,32 +79,43 @@ export default class EventsModel extends Observable {
 
       this._notify(updateType, update);
     } catch {
-      throw new Error('Не удалось обновить событие');
+      throw new Error('Can\'t update task');
     }
   }
 
-  addPoint(updateType, update) {
-    this.#points = [
-      update,
-      ...this.#points,
-    ];
+  async addPoint(updateType, update) {
+    try {
+      const responseUpdateEvent = await this.#eventsApiService.addEvent(update);
+      const updateEvent = this.#adaptToClient(responseUpdateEvent);
+      this.#points = [
+        updateEvent,
+        ...this.#points,
+      ];
 
-    this._notify(updateType, update);
-  }
-
-  deletePoint(updateType, update) {
-    const updateIndex = this.points.findIndex((item) => item.id === update.id);
-
-    if (updateIndex === -1) {
-      throw new Error('Не удалось удалить не найденное событие');
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Can\'t add task');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, updateIndex),
-      ...this.#points.slice(updateIndex + 1)
-    ];
+  }
 
-    this._notify(updateType);
+  async deletePoint(updateType, update) {
+    try {
+      const updateIndex = this.points.findIndex((item) => item.id === update.id);
+      if (updateIndex === -1) {
+        throw new Error('Can\'t delete unexisting task');
+      }
+      await this.#eventsApiService.deleteEvent(update);
+
+      this.#points = [
+        ...this.#points.slice(0, updateIndex),
+        ...this.#points.slice(updateIndex + 1)
+      ];
+
+      this._notify(updateType);
+    } catch {
+      throw new Error('Can\'t delete task');
+    }
   }
 
   #adaptToClient(event) {

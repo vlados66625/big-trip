@@ -33,7 +33,7 @@ export default class NewEventPresenter {
     this.#handleViewAction(
       UserAction.ADD_EVENT,
       UpdateType.MINOR,
-      { id: crypto.randomUUID(), ...event }
+      event
     );
 
     this.destroy();
