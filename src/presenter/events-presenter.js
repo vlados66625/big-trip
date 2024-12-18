@@ -3,6 +3,7 @@ import SortView from '../view/sort-view.js';
 import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import EventsLoadingView from '../view/events-loading-view.js';
+import DownloadErrorView from '../view/download-error-view.js';
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
@@ -26,6 +27,7 @@ export default class EventsPresenter {
   #newEventPresenter = null;
   #isEventsLoading = true;
   #eventsLoadingView = new EventsLoadingView();
+  #downloadErrorView = new DownloadErrorView();
 
   constructor({ eventsContainer, eventsModel, filterModel, handleNewEventClose }) {
     this.#eventsContainer = eventsContainer;
@@ -92,6 +94,11 @@ export default class EventsPresenter {
         this.#initNewEventPresenter();
         this.#renderPageEvents();
         break;
+      case UpdateType.ERROR:
+        this.#isEventsLoading = false;
+        remove(this.#eventsLoadingView);
+        this.#renderDownloadError();
+        break;
     }
   };
 
@@ -138,6 +145,10 @@ export default class EventsPresenter {
 
   #renderEventsLoading() {
     render(this.#eventsLoadingView, this.#eventsContainer);
+  }
+
+  #renderDownloadError() {
+    render(this.#downloadErrorView, this.#eventsContainer);
   }
 
   #renderEventsList() {

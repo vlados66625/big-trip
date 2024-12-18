@@ -134,6 +134,8 @@ export default class EventEditView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
   #handleDeleteEvent = null;
+  #eventInputPriceElement = null;
+  #eventInputDestinationElement = null;
 
   constructor({ point, offers, destinations, onEventEditFormSubmit, closeEditForm, handleDeleteEvent }) {
     super();
@@ -148,15 +150,17 @@ export default class EventEditView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    const eventInputPriceElement = this.element.querySelector('.event__input--price');
+    this.#eventInputPriceElement = this.element.querySelector('.event__input--price');
+    this.#eventInputDestinationElement = this.element.querySelector('.event__input--destination');
 
+    this.#eventInputPriceElement.addEventListener('change', this.#onEventInputPriceChange);
+    this.#eventInputPriceElement.addEventListener('input', this.#onEventInputPriceInput);
+    this.#eventInputDestinationElement.addEventListener('change', this.#onEventInputDestinationChange);
     this.element.querySelector('.event').addEventListener('submit', this.#onEventEditFormItemSubmit);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onRollupBtnClick);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#onEventTypeGroupChange);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#onEventInputDestinationChange);
-    eventInputPriceElement.addEventListener('change', this.#onEventInputPriceChange);
-    eventInputPriceElement.addEventListener('input', this.#onEventInputPriceInput);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onEventDeleteBtnClick);
+
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
   }
@@ -221,6 +225,14 @@ export default class EventEditView extends AbstractStatefulView {
 
   #onEventEditFormItemSubmit = (evt) => {
     evt.preventDefault();
+    if (
+      this.#eventInputDestinationElement.value === '' ||
+      this.#eventInputPriceElement.value === '' ||
+      this.#eventInputPriceElement.value === '0' ||
+      Number(this.#eventInputPriceElement.value) > 100000
+    ) {
+      return;
+    }
     this.#setStateOffersSelected();
     this.#onEventEditFormSubmit(this.#updateStateToData(this._state).point);
   };

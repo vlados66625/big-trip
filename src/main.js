@@ -36,7 +36,7 @@ function handleNewEventClose() {
 render(newEventButtonComponent, tripMain);
 
 eventsModel.init()
-  .finally(() => {
+  .then(() => {
     handleNewEventClose();
   });
 

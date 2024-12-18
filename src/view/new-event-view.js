@@ -88,7 +88,14 @@ const newEventViewTemplate = ({ point, offers, destinations, typeEvent, pointDes
                     <label class="event__label  event__type-output" for="event-destination-${point.id}">
                     ${he.encode(typeEvent)}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" ${pointDestination?.name ? '' : 'placeholder="Выберите город из списка"'} value="${pointDestination?.name || ''}" list="destination-list-${point.id}">
+                    <input
+                      class="event__input  event__input--destination"
+                      id="event-destination-${point.id}"
+                      type="text"
+                      name="event-destination"
+                      ${pointDestination?.name ? '' : 'placeholder="Выберите город из списка"'}
+                      value="${pointDestination?.name || ''}"
+                      list="destination-list-${point.id}">
                     <datalist id="destination-list-${point.id}">
                       ${Object.values(destinations).map((destination) => `<option value="${destination.name}"></option>`).join('')}
                     </datalist>
@@ -130,6 +137,8 @@ export default class NewEventView extends AbstractStatefulView {
   #datepickerFrom = null;
   #datepickerTo = null;
   #handleDeleteNewEvent = null;
+  #eventInputPriceElement = null;
+  #eventInputDestinationElement = null;
 
   constructor({ offers, destinations, handleNewEventFormSubmit, handleDeleteNewEvent }) {
     super();
@@ -143,14 +152,16 @@ export default class NewEventView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    const eventInputPriceElement = this.element.querySelector('.event__input--price');
+    this.#eventInputPriceElement = this.element.querySelector('.event__input--price');
+    this.#eventInputDestinationElement = this.element.querySelector('.event__input--destination');
 
+    this.#eventInputPriceElement.addEventListener('change', this.#onEventInputPriceChange);
+    this.#eventInputPriceElement.addEventListener('input', this.#onEventInputPriceInput);
+    this.#eventInputDestinationElement.addEventListener('change', this.#onEventInputDestinationChange);
     this.element.querySelector('.event').addEventListener('submit', this.#onEventEditFormItemSubmit);
     this.element.querySelector('.event__type-group').addEventListener('change', this.#onEventTypeGroupChange);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#onEventInputDestinationChange);
-    eventInputPriceElement.addEventListener('change', this.#onEventInputPriceChange);
-    eventInputPriceElement.addEventListener('input', this.#onEventInputPriceInput);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#onEventDeleteBtnClick);
+
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
   }
@@ -211,6 +222,14 @@ export default class NewEventView extends AbstractStatefulView {
 
   #onEventEditFormItemSubmit = (evt) => {
     evt.preventDefault();
+    if (
+      this.#eventInputDestinationElement.value === '' ||
+      this.#eventInputPriceElement.value === '' ||
+      this.#eventInputPriceElement.value === '0' ||
+      Number(this.#eventInputPriceElement.value) > 100000
+    ) {
+      return;
+    }
     this.#setStateOffersSelected();
     this.#handleNewEventFormSubmit(this.#updateStateToData(this._state).point);
   };
@@ -256,9 +275,6 @@ export default class NewEventView extends AbstractStatefulView {
   }
 
   #updateDataToState() {
-    console.log(this.#point)
-    console.log(this.#offers)
-    console.log(this.#destinations)
     return {
       point: this.#point,
       offers: this.#offers,
