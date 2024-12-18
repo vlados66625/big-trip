@@ -3,7 +3,6 @@ import NewEventView from '../view/new-event-view.js';
 import { UserAction, UpdateType } from '../const.js';
 
 export default class NewEventPresenter {
-  #eventsContainer = null;
   #handleNewEventClose = null;
   #handleViewAction = null;
   #offers = null;
@@ -11,21 +10,24 @@ export default class NewEventPresenter {
   #newEvent = null;
 
 
-  constructor({ eventsContainer, handleNewEventClose, handleViewAction, offers, destinations }) {
-    this.#eventsContainer = eventsContainer;
+  constructor({ handleNewEventClose, handleViewAction, offers, destinations }) {
     this.#handleNewEventClose = handleNewEventClose;
     this.#handleViewAction = handleViewAction;
     this.#offers = offers;
     this.#destinations = destinations;
   }
 
-  init() {
+  init({ eventsListElement }) {
     if (this.#newEvent !== null) {
       return;
     }
 
-    this.#newEvent = new NewEventView({ offers: this.#offers, destinations: this.#destinations, handleNewEventFormSubmit: this.#handleNewEventFormSubmit, handleDeleteNewEvent: this.destroy });
-    render(this.#newEvent, this.#eventsContainer, RenderPosition.AFTERBEGIN);
+    this.#newEvent = new NewEventView({
+      offers: this.#offers, destinations: this.#destinations,
+      handleNewEventFormSubmit: this.#handleNewEventFormSubmit,
+      handleDeleteNewEvent: this.destroy
+    });
+    render(this.#newEvent, eventsListElement, RenderPosition.AFTERBEGIN);
     window.addEventListener('keydown', this.#handleNewEventEscape);
   }
 
@@ -35,8 +37,6 @@ export default class NewEventPresenter {
       UpdateType.MINOR,
       event
     );
-
-    this.destroy();
   };
 
   destroy = () => {
@@ -57,4 +57,23 @@ export default class NewEventPresenter {
       this.destroy();
     }
   };
+
+  setSaving() {
+    this.#newEvent.updateElement({
+      isDisable: true,
+      isSaiving: true,
+    });
+  }
+
+  setAborting() {
+    const resetCardForm = () => {
+      this.#newEvent.updateElement({
+        isDisable: false,
+        isSaiving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#newEvent.shake(resetCardForm);
+  }
 }

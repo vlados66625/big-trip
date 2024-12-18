@@ -49,7 +49,7 @@ const createEventsItemViewTemplate = ({ point, offers, destinations }) =>
          <span class="visually-hidden">Open event</span>
        </button>
      </div >
-   </li >`;
+   </li>`;
 
 export default class EventItemView extends AbstractView {
   #point = null;

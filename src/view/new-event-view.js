@@ -4,13 +4,13 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-const createNewEventOffersTemplate = ({ point, offers, typeEvent, pointOffers }) => {
+const createNewEventOffersTemplate = ({ point, offers, typeEvent, pointOffers, isDisable }) => {
   const fiterOffers = Object.values(offers).filter((offer) => offer.type === typeEvent);
   if (fiterOffers.length !== 0) {
 
     const offersTemplate = fiterOffers.map((offerByType, indexOffer) =>
       `<div class="event__offer-selector">
-         <input class="event__offer-checkbox  visually-hidden" id="offer-${indexOffer}-${point.id}" type="checkbox" data-offer-id="${offerByType.id}" name="${offerByType.title}" ${pointOffers.find((pointOffer) => offerByType.id === pointOffer) ? 'checked' : ''}>
+         <input class="event__offer-checkbox  visually-hidden" id="offer-${indexOffer}-${point.id}" type="checkbox" ${isDisable ? 'disabled' : ''} data-offer-id="${offerByType.id}" name="${offerByType.title}" ${pointOffers.find((pointOffer) => offerByType.id === pointOffer) ? 'checked' : ''}>
          <label class="event__offer-label" for="offer-${indexOffer}-${point.id}">
            <span class="event__offer-title">${he.encode(offerByType.title)}</span>
            &plus;&euro;&nbsp;
@@ -60,7 +60,7 @@ const createNewEventDestinationPhotoTemplate = ({ pointDestination }) => {
   return '';
 };
 
-const newEventViewTemplate = ({ point, offers, destinations, typeEvent, pointDestination, pointOffers }) =>
+const newEventViewTemplate = ({ point, offers, destinations, typeEvent, pointDestination, pointOffers, isDisable, isSaiving }) =>
   `<li class="trip-events__item">
      <form class="event event--edit" action="#" method="post">
        <header class="event__header">
@@ -90,6 +90,7 @@ const newEventViewTemplate = ({ point, offers, destinations, typeEvent, pointDes
            </label>
            <input
              class="event__input  event__input--destination"
+             ${isDisable ? 'disabled' : ''}
              id="event-destination-${point.id}"
              type="text"
              name="event-destination"
@@ -103,10 +104,10 @@ const newEventViewTemplate = ({ point, offers, destinations, typeEvent, pointDes
 
          <div class="event__field-group  event__field-group--time">
            <label class="visually-hidden" for="event-start-time-${point.id}">From</label>
-           <input class="event__input  event__input--time" id="event-start-time-${point.id}" type="text" name="event-start-time" value="${point.dateFrom}">
+           <input class="event__input  event__input--time" id="event-start-time-${point.id}" ${isDisable ? 'disabled' : ''} type="text" name="event-start-time" value="${point.dateFrom}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-${point.id}">To</label>
-           <input class="event__input  event__input--time" id="event-end-time-${point.id}" type="text" name="event-end-time" value="${point.dateTo}">
+           <input class="event__input  event__input--time" id="event-end-time-${point.id}" ${isDisable ? 'disabled' : ''} type="text" name="event-end-time" value="${point.dateTo}">
          </div>
 
          <div class="event__field-group  event__field-group--price">
@@ -114,11 +115,11 @@ const newEventViewTemplate = ({ point, offers, destinations, typeEvent, pointDes
              <span class="visually-hidden">Price</span>
              &euro;
            </label>
-           <input class="event__input  event__input--price" id="event-price-${point.id}" type="text" name="event-price" value="${point.basePrice}">
+           <input class="event__input  event__input--price" id="event-price-${point.id}" type="text" ${isDisable ? 'disabled' : ''} name="event-price" value="${point.basePrice}">
          </div>
 
-           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-           <button class="event__reset-btn" type="reset">Cancel</button>
+           <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisable ? 'disabled' : ''}>${isSaiving ? 'Saiving' : 'Save'}</button>
+           <button class="event__reset-btn" type="reset" ${isDisable ? 'disabled' : ''}>Cancel</button>
          </header>
          <section class="event__details">
 
@@ -281,6 +282,8 @@ export default class NewEventView extends AbstractStatefulView {
     pointDateTo: null,
     pointBasePrice: null,
     pointOffers: null,
+    isDisable: null,
+    isSaiving: null,
   };
 
   #updateDataToState() {
@@ -294,6 +297,8 @@ export default class NewEventView extends AbstractStatefulView {
       pointDateTo: this.#point.dateTo,
       pointBasePrice: this.#point.basePrice,
       pointOffers: this.#point.offers,
+      isDisable: false,
+      isSaiving: false,
     };
   }
 

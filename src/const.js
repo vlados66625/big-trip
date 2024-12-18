@@ -1,4 +1,4 @@
-import { nowDateTime } from './util/task.js';
+import { nowDateTime, nowDateTimeAddMinute } from './util/task.js';
 
 const DateFormat = {
   TIME: 'HH:mm',
@@ -65,7 +65,7 @@ const NoEventsTexts = {
 const defaultPoint = {
   basePrice: '',
   dateFrom: nowDateTime,
-  dateTo: nowDateTime,
+  dateTo: nowDateTimeAddMinute,
   isFavorite: false,
   offers: [],
   type: 'taxi'
@@ -84,6 +84,11 @@ const Routes = {
   OFFERS_ROUTE: 'offers'
 };
 
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
 const END_POINT = 'https://20.objects.htmlacademy.pro/big-trip';
 
 const AUTHORIZATION = 'Basic kf92mxqpltzv';
@@ -92,5 +97,5 @@ export {
   DateFormat, FilterType,
   Mode, SortType, TypeEvent, UserAction, UpdateType,
   NoEventsTexts, defaultPoint, Method, Routes,
-  END_POINT, AUTHORIZATION
+  END_POINT, AUTHORIZATION, TimeLimit
 };
