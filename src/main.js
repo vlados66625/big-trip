@@ -1,6 +1,5 @@
-import { RenderPosition, render } from './framework/render.js';
+import { render, RenderPosition } from './framework/render.js';
 import TripInfoView from './view/trip-info-view.js';
-import NewEventButtonView from './view/new-event-button-view.js';
 import EventsPresenter from './presenter/events-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import EventsModel from './model/events-model.js';
@@ -17,28 +16,15 @@ const eventsApiService = new EventsApiService(END_POINT, AUTHORIZATION);
 const eventsModel = new EventsModel({ eventsApiService });
 const filterModel = new FilterModel();
 const filterPresenter = new FilterPresenter({ filterContainer: tripControlsFilters, filterModel, eventsModel });
-const eventsPresenter = new EventsPresenter({ eventsContainer: eventsSection, eventsModel, filterModel, handleNewEventClose });
+const eventsPresenter = new EventsPresenter({ eventsContainer: eventsSection, tripMainContainer: tripMain, eventsModel, filterModel });
 
 render(new TripInfoView(), tripMain, RenderPosition.AFTERBEGIN);
 
-
-const newEventButtonComponent = new NewEventButtonView({ handleNewEventButtonClick });
-
-function handleNewEventButtonClick() {
-  newEventButtonComponent.element.disabled = true;
-  eventsPresenter.createEvent();
-}
-
-function handleNewEventClose() {
-  newEventButtonComponent.element.disabled = false;
-}
-
-render(newEventButtonComponent, tripMain);
-
 eventsModel.init()
   .then(() => {
-    handleNewEventClose();
+    eventsPresenter.handleNewEventClose();
   });
+
 
 filterPresenter.init();
 eventsPresenter.init();

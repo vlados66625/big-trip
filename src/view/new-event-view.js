@@ -34,7 +34,7 @@ const createNewEventDestinationTemplate = ({ pointDestination }) => {
     return `
   <section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${he.encode(pointDestination?.description)}</p>
+    <p class="event__destination-description">${he.encode(pointDestination?.description || '')}</p>
   </section>
   `;
   }
@@ -274,6 +274,15 @@ export default class NewEventView extends AbstractStatefulView {
     return newEventViewTemplate(this._state);
   }
 
+  #initialState = {
+    typeEvent: null,
+    pointDestination: null,
+    pointDateFrom: null,
+    pointDateTo: null,
+    pointBasePrice: null,
+    pointOffers: null,
+  };
+
   #updateDataToState() {
     return {
       point: this.#point,
@@ -288,7 +297,6 @@ export default class NewEventView extends AbstractStatefulView {
     };
   }
 
-
   #updateStateToData(state) {
     const { point, typeEvent, pointDestination, pointDateFrom, pointDateTo, pointBasePrice, pointOffers } = state;
     point.type = typeEvent;
@@ -297,13 +305,7 @@ export default class NewEventView extends AbstractStatefulView {
     point.dateTo = pointDateTo;
     point.basePrice = pointBasePrice;
     point.offers = pointOffers;
-    delete state.typeEvent;
-    delete state.pointDestination;
-    delete state.pointDateFrom;
-    delete state.pointDateTo;
-    delete state.pointBasePrice;
-    delete state.pointOffers;
-    return state;
+    return { ...state, ...this.#initialState };
   }
 }
 

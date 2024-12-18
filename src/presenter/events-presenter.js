@@ -4,6 +4,7 @@ import EventsListView from '../view/events-list-view.js';
 import NoEventView from '../view/no-event-view.js';
 import EventsLoadingView from '../view/events-loading-view.js';
 import DownloadErrorView from '../view/download-error-view.js';
+import NewEventButtonView from '../view/new-event-button-view.js';
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import { SortType, UserAction, UpdateType, FilterType } from '../const.js';
@@ -12,13 +13,14 @@ import { filter } from '../util/filter.js';
 
 export default class EventsPresenter {
   #eventsListView = new EventsListView();
+  #newEventButtonView = null;
   #noEventView = null;
   #sortView = null;
   #eventPresenter = null;
   #eventsContainer = null;
+  #tripMainContainer = null;
   #eventsModel = null;
   #filterModel = null;
-  #handleNewEventClose = null;
   #offersByIdData = null;
   #getDestinationsById = null;
   #eventPresenters = new Map();
@@ -29,20 +31,22 @@ export default class EventsPresenter {
   #eventsLoadingView = new EventsLoadingView();
   #downloadErrorView = new DownloadErrorView();
 
-  constructor({ eventsContainer, eventsModel, filterModel, handleNewEventClose }) {
+  constructor({ eventsContainer, eventsModel, filterModel, tripMainContainer }) {
     this.#eventsContainer = eventsContainer;
+    this.#tripMainContainer = tripMainContainer;
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
-    this.#handleNewEventClose = handleNewEventClose;
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
     this.#renderPageEvents({ rerenderSort: false });
+    this.#newEventButtonView = new NewEventButtonView({ handleNewEventButtonClick: this.#handleNewEventButtonClick });
+    render(this.#newEventButtonView, this.#tripMainContainer);
   }
 
-  get point() {
+  get points() {
     this.#currentFilter = this.#filterModel.filter;
     const filteredPoints = filter[this.#currentFilter](this.#eventsModel.points);
     switch (this.#currentSortType) {
@@ -105,7 +109,7 @@ export default class EventsPresenter {
   #initNewEventPresenter() {
     this.#newEventPresenter = new NewEventPresenter({
       eventsContainer: this.#eventsListView.element,
-      handleNewEventClose: this.#handleNewEventClose,
+      handleNewEventClose: this.handleNewEventClose,
       handleViewAction: this.#handleViewAction,
       offers: this.#offersByIdData,
       destinations: this.#getDestinationsById
@@ -153,9 +157,9 @@ export default class EventsPresenter {
 
   #renderEventsList() {
     render(this.#eventsListView, this.#eventsContainer);
-    for (let i = 0; i < this.point.length; i++) {
-      this.#renderEvent({ point: this.point[i], offers: this.#offersByIdData, destinations: this.#getDestinationsById });
-    }
+    this.points.forEach((point) => {
+      this.#renderEvent({ point, offers: this.#offersByIdData, destinations: this.#getDestinationsById });
+    });
   }
 
   #renderNoEvent() {
@@ -169,24 +173,36 @@ export default class EventsPresenter {
       return;
     }
 
-    if (this.point.length !== 0) {
-      if (rerenderSort) {
-        remove(this.#sortView);
-        this.#renderSort();
-      }
-      if (!this.#sortView) {
-        this.#renderSort();
-      }
-      this.#renderEventsList();
-    } else {
+    if (!this.points.length) {
       this.#renderNoEvent();
+      return;
     }
+
+    if (rerenderSort) {
+      remove(this.#sortView);
+      this.#renderSort();
+    }
+
+    if (!this.#sortView) {
+      this.#renderSort();
+    }
+
+    this.#renderEventsList();
   }
 
-  createEvent() {
+  #createEvent() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERTHING);
     this.#newEventPresenter.init();
   }
+
+  #handleNewEventButtonClick = () => {
+    this.#newEventButtonView.element.disabled = true;
+    this.#createEvent();
+  };
+
+  handleNewEventClose = () => {
+    this.#newEventButtonView.element.disabled = false;
+  };
 }
 

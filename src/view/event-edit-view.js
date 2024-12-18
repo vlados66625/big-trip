@@ -12,7 +12,7 @@ const createEventsEditOffersTemplate = ({ point, offers, typeEvent, pointOffers 
       `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="offer-${indexOffer}-${point.id}" type="checkbox" data-offer-id="${offerByType.id}" name="${offerByType.title}" ${pointOffers.find((pointOffer) => offerByType.id === pointOffer) ? 'checked' : ''}>
         <label class="event__offer-label" for="offer-${indexOffer}-${point.id}">
-          <span class="event__offer-title">${he.encode(offerByType.title)}</span>
+          <span class="event__offer-title">${he.encode(offerByType?.title)}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${offerByType.price}</span>
         </label>
@@ -34,7 +34,7 @@ const createEventsEditDestinationTemplate = ({ pointDestination }) => {
     return `
   <section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${he.encode(pointDestination?.description)}</p>
+    <p class="event__destination-description">${he.encode(pointDestination?.description || '')}</p>
   </section>
   `;
   }
@@ -258,8 +258,10 @@ export default class EventEditView extends AbstractStatefulView {
     let destinationEvent = Object.values(this.#destinations).find((destination) => destination.name === evt.target.value);
     if (destinationEvent === undefined) {
       destinationEvent = {};
-      destinationEvent.description = '';
+      destinationEvent.id = '';
       destinationEvent.name = '';
+      destinationEvent.description = '';
+      destinationEvent.pictures = [];
     }
     this.updateElement({ pointDestination: destinationEvent });
   };
@@ -282,6 +284,15 @@ export default class EventEditView extends AbstractStatefulView {
     return createEventsEditViewTemplate(this._state);
   }
 
+  #initialState = {
+    typeEvent: null,
+    pointDestination: null,
+    pointDateFrom: null,
+    pointDateTo: null,
+    pointBasePrice: null,
+    pointOffers: null,
+  };
+
   #updateDataToState() {
     return {
       point: this.#point,
@@ -296,7 +307,6 @@ export default class EventEditView extends AbstractStatefulView {
     };
   }
 
-
   #updateStateToData(state) {
     const { point, typeEvent, pointDestination, pointDateFrom, pointDateTo, pointBasePrice, pointOffers } = state;
     point.type = typeEvent;
@@ -305,12 +315,6 @@ export default class EventEditView extends AbstractStatefulView {
     point.dateTo = pointDateTo;
     point.basePrice = pointBasePrice;
     point.offers = pointOffers;
-    delete state.typeEvent;
-    delete state.pointDestination;
-    delete state.pointDateFrom;
-    delete state.pointDateTo;
-    delete state.pointBasePrice;
-    delete state.pointOffers;
-    return state;
+    return { ...state, ...this.#initialState };
   }
 }
