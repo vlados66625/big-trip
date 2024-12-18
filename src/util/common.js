@@ -13,6 +13,4 @@ const getRandomNumber = (min, max, afterCommaNumbers) => {
 
 const getRandomItemArray = (array) => array[getRandomNumber(0, array.length - 1, 0)];
 
-const updateItems = (items, update) => items.map((item) => item.id === update.id ? update : item);
-
-export { getRandomNumber, getRandomItemArray, updateItems };
+export { getRandomNumber, getRandomItemArray };

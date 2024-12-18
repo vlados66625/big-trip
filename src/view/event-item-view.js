@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatsDate, calculatesDurationDate } from '../util/task.js';
 import { DateFormat } from '../const.js';
+import he from 'he';
 
 const createEventsItemViewTemplate = ({ point, offers, destinations }) =>
   `<li class="trip-events__item">
@@ -9,7 +10,7 @@ const createEventsItemViewTemplate = ({ point, offers, destinations }) =>
          <div class="event__type">
            <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
          </div>
-         <h3 class="event__title">${point.type} ${destinations[point.destination]?.name}</h3>
+         <h3 class="event__title">${he.encode(point.type)} ${he.encode(destinations[point.destination]?.name || '')}</h3>
          <div class="event__schedule">
            <p class="event__time">
              <time class="event__start-time" datetime="${formatsDate(point.dateFrom, DateFormat.FULL_DATETIME_Y_M_D)}">${formatsDate(point.dateFrom, DateFormat.TIME)}</time>
@@ -25,7 +26,7 @@ const createEventsItemViewTemplate = ({ point, offers, destinations }) =>
     ${point.offers.length !== 0 ? '<ul class="event__selected-offers">' : ''}
     ${point.offers.map((offerId) =>
     `<li class="event__offer">
-         <span class="event__offer-title">${offers[offerId].title}</span>
+         <span class="event__offer-title">${he.encode(offers[offerId].title)}</span>
          &plus;&euro;&nbsp;
          <span class="event__offer-price">${offers[offerId].price}</span>
      </li>`).join('')}

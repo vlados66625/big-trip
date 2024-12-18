@@ -4,16 +4,10 @@ import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
 
 const filter = {
-  [FilterType.EVERTHING]: (events) => [...events],
-  [FilterType.FUTURE]: (events) => [...events].filter((event) => dayjs().isBefore(dayjs(event.dateFrom))),
-  [FilterType.PRESENT]: (events) => [...events].filter((event) => dayjs().isBetween(event.dateFrom, event.dateTo, null, '[)')),
-  [FilterType.PAST]: (events) => [...events].filter((event) => dayjs().isAfter(dayjs(event.dateTo))),
+  [FilterType.EVERTHING]: (points) => [...points],
+  [FilterType.FUTURE]: (points) => [...points].filter((point) => dayjs().isBefore(dayjs(point.dateFrom))),
+  [FilterType.PRESENT]: (points) => [...points].filter((point) => dayjs().isBetween(point.dateFrom, point.dateTo, null, '[)')),
+  [FilterType.PAST]: (points) => [...points].filter((point) => dayjs().isAfter(dayjs(point.dateTo))),
 };
 
-const generateFilter = (event) =>
-  Object.entries(filter).map(([type, filterEvents]) => ({
-    type: type,
-    count: filterEvents(event).length
-  }));
-
-export { generateFilter };
+export { filter };

@@ -36,4 +36,6 @@ const sortingByTime = (pointsDataA, pointsDataB) => {
 
 const sortingByPrice = (pointsDataA, pointsDataB) => pointsDataB.basePrice - pointsDataA.basePrice;
 
-export { formatsDate, calculatesDurationDate, sortingByDay, sortingByTime, sortingByPrice };
+const nowDateTime = dayjs().toISOString();
+
+export { formatsDate, calculatesDurationDate, sortingByDay, sortingByTime, sortingByPrice, nowDateTime };
