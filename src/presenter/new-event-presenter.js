@@ -5,14 +5,16 @@ import { UserAction, UpdateType } from '../const.js';
 export default class NewEventPresenter {
   #handleNewEventClose = null;
   #handleViewAction = null;
+  #rerenderPageEvents = null;
   #offers = null;
   #destinations = null;
   #newEvent = null;
 
 
-  constructor({ handleNewEventClose, handleViewAction, offers, destinations }) {
+  constructor({ handleNewEventClose, handleViewAction, rerenderPageEvents, offers, destinations }) {
     this.#handleNewEventClose = handleNewEventClose;
     this.#handleViewAction = handleViewAction;
+    this.#rerenderPageEvents = rerenderPageEvents;
     this.#offers = offers;
     this.#destinations = destinations;
   }
@@ -49,6 +51,7 @@ export default class NewEventPresenter {
 
     this.#handleNewEventClose();
     window.removeEventListener('keydown', this.#handleNewEventEscape);
+    this.#rerenderPageEvents();
   };
 
   #handleNewEventEscape = (evt) => {

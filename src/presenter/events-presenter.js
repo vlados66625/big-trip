@@ -108,18 +108,21 @@ export default class EventsPresenter {
     this.#uiBlocker.unblock();
   };
 
+  #rerenderPageEvents = (props) => {
+    this.#clearEventsSection(props);
+    this.#renderPageEvents();
+  };
+
   #handleModelEvent = (updateType, updatePoint) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(updatePoint.id).init({ point: updatePoint, offers: this.#offersByIdData, destinations: this.#getDestinationsById });
         break;
       case UpdateType.MINOR:
-        this.#clearEventsSection();
-        this.#renderPageEvents();
+        this.#rerenderPageEvents();
         break;
       case UpdateType.MAJOR:
-        this.#clearEventsSection({ resetSort: true });
-        this.#renderPageEvents();
+        this.#rerenderPageEvents({ resetSort: true });
         break;
       case UpdateType.INIT:
         this.#isEventsLoading = false;
@@ -141,6 +144,7 @@ export default class EventsPresenter {
     this.#newEventPresenter = new NewEventPresenter({
       handleNewEventClose: this.#handleNewEventClose,
       handleViewAction: this.#handleViewAction,
+      rerenderPageEvents: this.#rerenderPageEvents,
       offers: this.#offersByIdData,
       destinations: this.#getDestinationsById
     });
@@ -154,8 +158,7 @@ export default class EventsPresenter {
   #onSortItemChange = (sortType) => {
     if (this.#currentSortType !== sortType) {
       this.#currentSortType = sortType;
-      this.#clearEventsSection();
-      this.#renderPageEvents();
+      this.#rerenderPageEvents();
     }
   };
 
