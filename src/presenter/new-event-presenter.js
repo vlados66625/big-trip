@@ -6,15 +6,17 @@ export default class NewEventPresenter {
   #handleNewEventClose = null;
   #handleViewAction = null;
   #rerenderPageEvents = null;
+  #isRerenderPageEvents = null;
   #offers = null;
   #destinations = null;
   #newEvent = null;
 
 
-  constructor({ handleNewEventClose, handleViewAction, rerenderPageEvents, offers, destinations }) {
+  constructor({ handleNewEventClose, handleViewAction, isRerenderPageEvents, rerenderPageEvents, offers, destinations }) {
     this.#handleNewEventClose = handleNewEventClose;
     this.#handleViewAction = handleViewAction;
     this.#rerenderPageEvents = rerenderPageEvents;
+    this.#isRerenderPageEvents = isRerenderPageEvents;
     this.#offers = offers;
     this.#destinations = destinations;
   }
@@ -51,7 +53,10 @@ export default class NewEventPresenter {
 
     this.#handleNewEventClose();
     window.removeEventListener('keydown', this.#handleNewEventEscape);
-    this.#rerenderPageEvents();
+
+    if (this.#isRerenderPageEvents()) {
+      this.#rerenderPageEvents();
+    }
   };
 
   #handleNewEventEscape = (evt) => {

@@ -89,6 +89,10 @@ export const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
+export const MIN_VALUE_PRICE = 1;
+
+export const MAX_VALUE_PRICE = 100000;
+
 export const END_POINT = 'https://20.objects.htmlacademy.pro/big-trip';
 
 export const AUTHORIZATION = 'Basic kf92mxqpltzv';

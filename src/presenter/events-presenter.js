@@ -140,11 +140,15 @@ export default class EventsPresenter {
     }
   };
 
+  #isRenderNoEventView = () => !this.points.length;
+
+
   #initNewEventPresenter() {
     this.#newEventPresenter = new NewEventPresenter({
       handleNewEventClose: this.#handleNewEventClose,
       handleViewAction: this.#handleViewAction,
       rerenderPageEvents: this.#rerenderPageEvents,
+      isRerenderPageEvents: this.#isRenderNoEventView,
       offers: this.#offersByIdData,
       destinations: this.#getDestinationsById
     });
@@ -216,7 +220,7 @@ export default class EventsPresenter {
       return;
     }
 
-    if (!this.points.length) {
+    if (this.#isRenderNoEventView()) {
       this.#renderNoEvent();
       return;
     }
@@ -229,7 +233,7 @@ export default class EventsPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERTHING);
 
-    if (!this.points.length) {
+    if (this.#isRenderNoEventView()) {
       remove(this.#noEventView);
       render(this.#eventsListView, this.#eventsContainer);
     }
