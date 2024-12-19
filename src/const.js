@@ -1,6 +1,6 @@
 import { nowDateTime, nowDateTimeAddMinute } from './util/task.js';
 
-const DateFormat = {
+export const DateFormat = {
   TIME: 'HH:mm',
   DATA: 'YYYY-MM-DD',
   SHORT_DATE: 'MMM DD',
@@ -11,25 +11,25 @@ const DateFormat = {
   FULL_DATETIME_D_M_Y: 'DD/MM/YY HH:mm'
 };
 
-const FilterType = {
+export const FilterType = {
   EVERTHING: 'everthing',
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past'
 };
 
-const Mode = {
+export const Mode = {
   VIEW: 'view',
   EDIT: 'edit'
 };
 
-const SortType = {
+export const SortType = {
   DAY: 'day',
   TIME: 'time',
   PRICE: 'price',
 };
 
-const TypeEvent = {
+export const TypeEvent = {
   TAXI: 'taxi',
   BUS: 'bus',
   TRAIN: 'train',
@@ -41,13 +41,13 @@ const TypeEvent = {
   RESTAURANT: 'restaurant',
 };
 
-const UserAction = {
+export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
   DELETE_EVENT: 'DELETE_EVENT',
 };
 
-const UpdateType = {
+export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
@@ -55,14 +55,14 @@ const UpdateType = {
   ERROR: 'ERROR'
 };
 
-const NoEventsTexts = {
+export const NoEventsTexts = {
   [FilterType.EVERTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no past events now',
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.PAST]: 'There are no future events now'
 };
 
-const defaultPoint = {
+export const defaultPoint = {
   basePrice: '',
   dateFrom: nowDateTime,
   dateTo: nowDateTimeAddMinute,
@@ -71,31 +71,28 @@ const defaultPoint = {
   type: 'taxi'
 };
 
-const Method = {
+export const Method = {
   GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
   DELETE: 'DELETE',
 };
 
-const Routes = {
+export const Routes = {
   POINTS_ROUTE: 'points',
   DESTINATIONS_ROUTE: 'destinations',
   OFFERS_ROUTE: 'offers'
 };
 
-const TimeLimit = {
+export const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
 
-const END_POINT = 'https://20.objects.htmlacademy.pro/big-trip';
+export const MIN_VALUE_PRICE = 1;
 
-const AUTHORIZATION = 'Basic kf92mxqpltzv';
+export const MAX_VALUE_PRICE = 100000;
 
-export {
-  DateFormat, FilterType,
-  Mode, SortType, TypeEvent, UserAction, UpdateType,
-  NoEventsTexts, defaultPoint, Method, Routes,
-  END_POINT, AUTHORIZATION, TimeLimit
-};
+export const END_POINT = 'https://20.objects.htmlacademy.pro/big-trip';
+
+export const AUTHORIZATION = 'Basic kf92mxqpltzv';

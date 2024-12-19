@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { TypeEvent, defaultPoint } from '../const.js';
+import { TypeEvent, defaultPoint, MIN_VALUE_PRICE, MAX_VALUE_PRICE } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
@@ -226,8 +226,8 @@ export default class NewEventView extends AbstractStatefulView {
     if (
       this.#eventInputDestinationElement.value === '' ||
       this.#eventInputPriceElement.value === '' ||
-      this.#eventInputPriceElement.value === '0' ||
-      Number(this.#eventInputPriceElement.value) > 100000
+      Number(this.#eventInputPriceElement.value) < MIN_VALUE_PRICE ||
+      Number(this.#eventInputPriceElement.value) > MAX_VALUE_PRICE
     ) {
       return;
     }

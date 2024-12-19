@@ -1,6 +1,6 @@
 import Observable from '../framework/observable.js';
 import { UpdateType } from '../const.js';
-
+import { adaptToClient } from '../util/task.js';
 
 export default class EventsModel extends Observable {
   #points = [];
@@ -16,7 +16,7 @@ export default class EventsModel extends Observable {
   async init() {
     try {
       const events = await this.#eventsApiService.events;
-      this.#points = events.map(this.#adaptToClient);
+      this.#points = events.map(adaptToClient);
       this.#destinations = await this.#eventsApiService.destinations;
       this.#offers = await this.#eventsApiService.offers;
       this._notify(UpdateType.INIT);
@@ -68,7 +68,7 @@ export default class EventsModel extends Observable {
 
     try {
       const responseUpdateEvent = await this.#eventsApiService.updateEvent(update);
-      const updateEvent = this.#adaptToClient(responseUpdateEvent);
+      const updateEvent = adaptToClient(responseUpdateEvent);
 
 
       this.#points = [
@@ -86,7 +86,7 @@ export default class EventsModel extends Observable {
   async addPoint(updateType, update) {
     try {
       const responseUpdateEvent = await this.#eventsApiService.addEvent(update);
-      const updateEvent = this.#adaptToClient(responseUpdateEvent);
+      const updateEvent = adaptToClient(responseUpdateEvent);
       this.#points = [
         updateEvent,
         ...this.#points,
@@ -116,22 +116,5 @@ export default class EventsModel extends Observable {
     } catch {
       throw new Error('Can\'t delete task');
     }
-  }
-
-  #adaptToClient(event) {
-    const adapterEvent = {
-      ...event,
-      basePrice: event['base_price'],
-      dateFrom: event['date_from'],
-      dateTo: event['date_to'],
-      isFavorite: event['is_favorite'],
-    };
-
-    delete adapterEvent['base_price'];
-    delete adapterEvent['date_from'];
-    delete adapterEvent['date_to'];
-    delete adapterEvent['is_favorite'];
-
-    return adapterEvent;
   }
 }

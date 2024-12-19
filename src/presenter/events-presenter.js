@@ -46,7 +46,12 @@ export default class EventsPresenter {
   }
 
   init() {
-    this.#renderPageEvents({ rerenderSort: false });
+    this.#eventsModel.init()
+      .then(() => {
+        this.#handleNewEventClose();
+      });
+
+    this.#renderPageEvents();
     this.#newEventButtonView = new NewEventButtonView({ handleNewEventButtonClick: this.#handleNewEventButtonClick });
     render(this.#newEventButtonView, this.#tripMainContainer);
   }
@@ -103,18 +108,21 @@ export default class EventsPresenter {
     this.#uiBlocker.unblock();
   };
 
+  #rerenderPageEvents = (props) => {
+    this.#clearEventsSection(props);
+    this.#renderPageEvents();
+  };
+
   #handleModelEvent = (updateType, updatePoint) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(updatePoint.id).init({ point: updatePoint, offers: this.#offersByIdData, destinations: this.#getDestinationsById });
         break;
       case UpdateType.MINOR:
-        this.#clearEventsSection();
-        this.#renderPageEvents();
+        this.#rerenderPageEvents();
         break;
       case UpdateType.MAJOR:
-        this.#clearEventsSection();
-        this.#renderPageEvents({ rerenderSort: true });
+        this.#rerenderPageEvents({ resetSort: true });
         break;
       case UpdateType.INIT:
         this.#isEventsLoading = false;
@@ -132,25 +140,29 @@ export default class EventsPresenter {
     }
   };
 
+  #isRenderNoEventView = () => !this.points.length;
+
+
   #initNewEventPresenter() {
     this.#newEventPresenter = new NewEventPresenter({
-      handleNewEventClose: this.handleNewEventClose,
+      handleNewEventClose: this.#handleNewEventClose,
       handleViewAction: this.#handleViewAction,
+      rerenderPageEvents: this.#rerenderPageEvents,
+      isRerenderPageEvents: this.#isRenderNoEventView,
       offers: this.#offersByIdData,
       destinations: this.#getDestinationsById
     });
   }
 
   #renderSort() {
-    this.#sortView = new SortView({ onSortItemChange: this.#onSortItemChange });
+    this.#sortView = new SortView({ currentSortType: this.#currentSortType, onSortItemChange: this.#onSortItemChange });
     render(this.#sortView, this.#eventsContainer);
   }
 
   #onSortItemChange = (sortType) => {
     if (this.#currentSortType !== sortType) {
       this.#currentSortType = sortType;
-      this.#clearEventsSection();
-      this.#renderEventsList();
+      this.#rerenderPageEvents();
     }
   };
 
@@ -167,10 +179,15 @@ export default class EventsPresenter {
     this.#eventPresenters.set(dataEvent.point.id, this.#eventPresenter);
   }
 
-  #clearEventsSection() {
+  #clearEventsSection({ resetSort = false } = {}) {
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((eventPresenter) => eventPresenter.destroy());
     this.#eventPresenters.clear();
+    remove(this.#sortView);
+
+    if (resetSort) {
+      this.#currentSortType = SortType.DAY;
+    }
 
     if (this.#noEventView) {
       remove(this.#noEventView);
@@ -197,26 +214,18 @@ export default class EventsPresenter {
     render(this.#noEventView, this.#eventsContainer);
   }
 
-  #renderPageEvents({ rerenderSort = false } = {}) {
+  #renderPageEvents() {
     if (this.#isEventsLoading) {
       this.#renderEventsLoading();
       return;
     }
 
-    if (!this.points.length) {
+    if (this.#isRenderNoEventView()) {
       this.#renderNoEvent();
       return;
     }
 
-    if (rerenderSort) {
-      remove(this.#sortView);
-      this.#renderSort();
-    }
-
-    if (!this.#sortView) {
-      this.#renderSort();
-    }
-
+    this.#renderSort();
     this.#renderEventsList();
   }
 
@@ -224,7 +233,7 @@ export default class EventsPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERTHING);
 
-    if (!this.points.length) {
+    if (this.#isRenderNoEventView()) {
       remove(this.#noEventView);
       render(this.#eventsListView, this.#eventsContainer);
     }
@@ -237,7 +246,7 @@ export default class EventsPresenter {
     this.#createEvent();
   };
 
-  handleNewEventClose = () => {
+  #handleNewEventClose = () => {
     this.#newEventButtonView.element.disabled = false;
   };
 }
