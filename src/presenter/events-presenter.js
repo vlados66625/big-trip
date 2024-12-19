@@ -46,7 +46,12 @@ export default class EventsPresenter {
   }
 
   init() {
-    this.#renderPageEvents({ rerenderSort: false });
+    this.#eventsModel.init()
+      .then(() => {
+        this.#handleNewEventClose();
+      });
+
+    this.#renderPageEvents();
     this.#newEventButtonView = new NewEventButtonView({ handleNewEventButtonClick: this.#handleNewEventButtonClick });
     render(this.#newEventButtonView, this.#tripMainContainer);
   }
@@ -113,8 +118,8 @@ export default class EventsPresenter {
         this.#renderPageEvents();
         break;
       case UpdateType.MAJOR:
-        this.#clearEventsSection();
-        this.#renderPageEvents({ rerenderSort: true });
+        this.#clearEventsSection({ resetSort: true });
+        this.#renderPageEvents();
         break;
       case UpdateType.INIT:
         this.#isEventsLoading = false;
@@ -134,7 +139,7 @@ export default class EventsPresenter {
 
   #initNewEventPresenter() {
     this.#newEventPresenter = new NewEventPresenter({
-      handleNewEventClose: this.handleNewEventClose,
+      handleNewEventClose: this.#handleNewEventClose,
       handleViewAction: this.#handleViewAction,
       offers: this.#offersByIdData,
       destinations: this.#getDestinationsById
@@ -142,7 +147,7 @@ export default class EventsPresenter {
   }
 
   #renderSort() {
-    this.#sortView = new SortView({ onSortItemChange: this.#onSortItemChange });
+    this.#sortView = new SortView({ currentSortType: this.#currentSortType, onSortItemChange: this.#onSortItemChange });
     render(this.#sortView, this.#eventsContainer);
   }
 
@@ -150,7 +155,7 @@ export default class EventsPresenter {
     if (this.#currentSortType !== sortType) {
       this.#currentSortType = sortType;
       this.#clearEventsSection();
-      this.#renderEventsList();
+      this.#renderPageEvents();
     }
   };
 
@@ -167,10 +172,15 @@ export default class EventsPresenter {
     this.#eventPresenters.set(dataEvent.point.id, this.#eventPresenter);
   }
 
-  #clearEventsSection() {
+  #clearEventsSection({ resetSort = false } = {}) {
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((eventPresenter) => eventPresenter.destroy());
     this.#eventPresenters.clear();
+    remove(this.#sortView);
+
+    if (resetSort) {
+      this.#currentSortType = SortType.DAY;
+    }
 
     if (this.#noEventView) {
       remove(this.#noEventView);
@@ -197,7 +207,7 @@ export default class EventsPresenter {
     render(this.#noEventView, this.#eventsContainer);
   }
 
-  #renderPageEvents({ rerenderSort = false } = {}) {
+  #renderPageEvents() {
     if (this.#isEventsLoading) {
       this.#renderEventsLoading();
       return;
@@ -208,15 +218,7 @@ export default class EventsPresenter {
       return;
     }
 
-    if (rerenderSort) {
-      remove(this.#sortView);
-      this.#renderSort();
-    }
-
-    if (!this.#sortView) {
-      this.#renderSort();
-    }
-
+    this.#renderSort();
     this.#renderEventsList();
   }
 
@@ -237,7 +239,7 @@ export default class EventsPresenter {
     this.#createEvent();
   };
 
-  handleNewEventClose = () => {
+  #handleNewEventClose = () => {
     this.#newEventButtonView.element.disabled = false;
   };
 }

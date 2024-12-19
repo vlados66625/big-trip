@@ -20,11 +20,5 @@ const eventsPresenter = new EventsPresenter({ eventsContainer: eventsSection, tr
 
 render(new TripInfoView(), tripMain, RenderPosition.AFTERBEGIN);
 
-eventsModel.init()
-  .then(() => {
-    eventsPresenter.handleNewEventClose();
-  });
-
-
 filterPresenter.init();
 eventsPresenter.init();
