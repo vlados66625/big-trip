@@ -1,6 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { TypeEvent, MIN_VALUE_PRICE, MAX_VALUE_PRICE } from '../const.js';
+import { TypeEvent, MIN_VALUE_PRICE, MAX_VALUE_PRICE, DateFormat } from '../const.js';
 import flatpickr from 'flatpickr';
+import { formatsDate } from '../util/task.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
@@ -96,10 +97,10 @@ const createEventsEditViewTemplate = ({ point, offers, destinations, typeEvent, 
 
          <div class="event__field-group  event__field-group--time">
            <label class="visually-hidden" for="event-start-time-${point.id}">From</label>
-           <input class="event__input  event__input--time" id="event-start-time-${point.id}" ${isDisable ? 'disabled' : ''} type="text" name="event-start-time" value="${point.dateFrom}">
+           <input class="event__input  event__input--time" id="event-start-time-${point.id}" ${isDisable ? 'disabled' : ''} type="text" name="event-start-time" ${console.log(formatsDate(point.dateFrom, DateFormat.FULL_DATETIME_D_M_Y))} value="${formatsDate(point.dateFrom, DateFormat.FULL_DATETIME_D_M_Y)}">
            &mdash;
            <label class="visually-hidden" for="event-end-time-${point.id}">To</label>
-           <input class="event__input  event__input--time" id="event-end-time-${point.id}" ${isDisable ? 'disabled' : ''} type="text" name="event-end-time" value="${point.dateTo}">
+           <input class="event__input  event__input--time" id="event-end-time-${point.id}" ${isDisable ? 'disabled' : ''} type="text" name="event-end-time" value="${formatsDate(point.dateTo, DateFormat.FULL_DATETIME_D_M_Y)}">
          </div>
 
          <div class="event__field-group  event__field-group--price">
